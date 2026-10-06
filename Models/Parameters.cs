@@ -12,4 +12,9 @@ internal class Parameters
         left = 3,
         right = 4
     }
+    public enum RotationDirection
+    {
+        clockwise = 1,
+        counterclockwise = 2
+    }
 }

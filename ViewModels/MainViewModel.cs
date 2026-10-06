@@ -12,6 +12,7 @@ public partial class MainViewModel : ViewModelBase
     Robot robot;
     public double RobotX => robot.Location.X;
     public double RobotY => robot.Location.Y;
+    public int RobotRotationAngle => robot.RotationAngle;
     public MainViewModel()
     {
         Point point = new Point(0, 0);
@@ -41,5 +42,43 @@ public partial class MainViewModel : ViewModelBase
         robot.Move(Direction.right);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
+    }
+    public void MoveUpLeft()
+    {
+        robot.Move(Direction.up);
+        robot.Move(Direction.left);
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+    }
+    public void MoveUpRight()
+    {
+        robot.Move(Direction.up);
+        robot.Move(Direction.right);
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+    }
+    public void MoveDownLeft()
+    {
+        robot.Move(Direction.down);
+        robot.Move(Direction.left);
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+    }
+    public void MoveDownRight()
+    {
+        robot.Move(Direction.down);
+        robot.Move(Direction.right);
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+    }
+    public void RotateRight()
+    {
+        robot.Rotate(Parameters.RotationDirection.clockwise);
+        OnPropertyChanged(nameof(RobotRotationAngle));
+    }
+    public void RotateLeft()
+    {
+        robot.Rotate(Parameters.RotationDirection.counterclockwise);
+        OnPropertyChanged(nameof(RobotRotationAngle));
     }
 }

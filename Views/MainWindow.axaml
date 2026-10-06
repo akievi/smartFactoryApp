@@ -27,8 +27,19 @@
                 <Button x:Name="DownButton" Content="Down" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="60" FontSize="16" Click="MoveDown_Click" />
                 <Button x:Name="LeftButton" Content="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" FontSize="16" Click="MoveLeft_Click" />
                 <Button x:Name="RightButton" Content="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Width="55" FontSize="16" Click="MoveRight_Click" />
+                <Button x:Name="UpLeftButton" Content="UL" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" FontSize="16" Click="MoveUpLeft_Click" />
+                <Button x:Name="UpRightButton" Content="UR" HorizontalAlignment="Right" VerticalAlignment="Top" Width="50" FontSize="16" Click="MoveUpRight_Click" />
+                <Button x:Name="DownLeftButton" Content="DL" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="50" FontSize="16" Click="MoveDownLeft_Click" />
+                <Button x:Name="DownRightButton" Content="DR" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="50" FontSize="16" Click="MoveDownRight_Click" />
+            </Grid>
+            <Grid Height="95" Width="160" Canvas.Left="730" Canvas.Top="400">
+                <Button x:Name="RotateRightButton" Content="RotateR" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" FontSize="16" Click="RotateRight_Click" />
+                <Button x:Name="RotateLeftButton" Content="RotateL" HorizontalAlignment="Left" VerticalAlignment="Center" Width="75" FontSize="16" Click="RotateLeft_Click" />
             </Grid>
             <Rectangle x:Name="robotRectangle" Width="70" Height="50" Stroke="Black" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" >
+                <Rectangle.RenderTransform>
+                    <RotateTransform Angle="{Binding RobotRotationAngle}" />
+                </Rectangle.RenderTransform>
                 <Rectangle.Fill>
                     <ImageBrush Source="avares://smartFactoryApp/Assets/robot_platform.png" />
                 </Rectangle.Fill>

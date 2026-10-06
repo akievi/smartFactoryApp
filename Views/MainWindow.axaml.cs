@@ -27,4 +27,32 @@ public partial class MainWindow : Window
     {
         ViewModel?.MoveRight();
     }
+    private void MoveUpLeft_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.MoveUp();
+        ViewModel?.MoveLeft();
+    }
+    private void MoveUpRight_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.MoveUp();
+        ViewModel?.MoveRight();
+    }
+    private void MoveDownLeft_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.MoveDown();
+        ViewModel?.MoveLeft();
+    }
+    private void MoveDownRight_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.MoveDown();
+        ViewModel?.MoveRight();
+    }
+    private void RotateRight_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.RotateRight();
+    }
+    private void RotateLeft_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.RotateLeft();
+    }
 }

@@ -5,7 +5,7 @@ internal class Robot
 {
     private Point location;
     private Rectangle borders;
-
+    private int rotationAngle = 0;
     public Point Location
     {
         get { return location; }
@@ -26,6 +26,11 @@ internal class Robot
     {
         this.location = location;
         //Location = location;
+    }
+    public int RotationAngle
+    {
+        get { return rotationAngle; }
+        set { rotationAngle = value; }
     }
     public void Move(Parameters.Direction direction)
     {
@@ -49,6 +54,19 @@ internal class Robot
                 break;
             default:
                 break;
+        }
+    }
+    public void Rotate(Parameters.RotationDirection rotationDirection) 
+    {
+        if (rotationDirection == Parameters.RotationDirection.clockwise)
+        {
+            rotationAngle += Parameters.degreeStep;
+            rotationAngle = (rotationAngle % 360 + 360) % 360;
+        }
+        else if (rotationDirection == Parameters.RotationDirection.counterclockwise)
+        {
+            rotationAngle -= Parameters.degreeStep;
+            rotationAngle = (rotationAngle % 360 + 360) % 360;
         }
     }
 }
