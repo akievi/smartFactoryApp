@@ -4,81 +4,82 @@ using System.Runtime.CompilerServices;
 using System.Drawing;
 using smartFactoryApp.Models;
 using static smartFactoryApp.Models.Parameters;
-
+using static smartFactoryApp.Models.ViewParameters;
+using System.Threading.Tasks;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using System.Collections.Generic;
+using Avalonia.Threading;
+using System;
 namespace smartFactoryApp.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    Robot robot;
-    public double RobotX => robot.Location.X;
-    public double RobotY => robot.Location.Y;
-    public int RobotRotationAngle => robot.RotationAngle;
+    Factory factory;
+    DispatcherTimer timer;
+    public List<LegoBricksViewModel> BricksView { get; } = new List<LegoBricksViewModel>();
+    public double RobotX => factory.RobotX;
+    public double RobotY => factory.RobotY;
+    public double RobotRotationAngle => factory.RobotRotationAngle;
     public MainViewModel()
     {
-        Point point = new Point(0, 0);
-        Rectangle borders = new Rectangle(0, 0, 900, 600);
-        robot = new Robot(point, borders);
+        factory = new Factory();
+        foreach (var brick in factory.Bricks)
+            BricksView.Add(new LegoBricksViewModel(brick));
+        timer = new DispatcherTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
+        timer.Tick += Timer_Tick;
+        timer.Start();
+    }
+    private void Timer_Tick(object? sender, EventArgs e)
+    {
+        factory.LegoBricksMove();
+        BricksPoseChanged();
     }
     public void MoveUp()
     {
-        robot.Move(Direction.up);
+        factory.RobotMove(Direction.up);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
     }
     public void MoveDown()
     {
-        robot.Move(Direction.down);
+        factory.RobotMove(Direction.down);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
     }
     public void MoveLeft()
     {
-        robot.Move(Direction.left);
+        factory.RobotMove(Direction.left);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
     }
     public void MoveRight()
     {
-        robot.Move(Direction.right);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
-    }
-    public void MoveUpLeft()
-    {
-        robot.Move(Direction.up);
-        robot.Move(Direction.left);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
-    }
-    public void MoveUpRight()
-    {
-        robot.Move(Direction.up);
-        robot.Move(Direction.right);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
-    }
-    public void MoveDownLeft()
-    {
-        robot.Move(Direction.down);
-        robot.Move(Direction.left);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
-    }
-    public void MoveDownRight()
-    {
-        robot.Move(Direction.down);
-        robot.Move(Direction.right);
+        factory.RobotMove(Direction.right);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
     }
     public void RotateRight()
     {
-        robot.Rotate(Parameters.RotationDirection.clockwise);
+        factory.RobotRotate(Parameters.Direction.clockwise);
         OnPropertyChanged(nameof(RobotRotationAngle));
     }
     public void RotateLeft()
     {
-        robot.Rotate(Parameters.RotationDirection.counterclockwise);
+        factory.RobotRotate(Parameters.Direction.counterclockwise);
         OnPropertyChanged(nameof(RobotRotationAngle));
+    }
+    private void RobotPoseChanged()
+    {
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+        OnPropertyChanged(nameof(RobotRotationAngle));
+    }
+    private void BricksPoseChanged()
+    {
+        foreach (var brick in BricksView)
+        {
+            brick.Refresh();
+        }
     }
 }

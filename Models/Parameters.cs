@@ -1,20 +1,30 @@
 namespace smartFactoryApp.Models;
 
-internal class Parameters
+public class Parameters
 {
     public const int step = 3;
     public const int degreeStep = 5;
+    public const int bricksPerLine = 4;
+    public const int timerInterval = 50; //in ms
     public enum Direction
     {
-        stop = 0,
-        up = 1,
-        down = 2,
-        left = 3,
-        right = 4
+        up = 0,
+        down = 1,
+        left = 2,
+        right = 3,
+        clockwise = 4,
+        counterclockwise = 5
     }
-    public enum RotationDirection
+    public enum LegoColor
     {
-        clockwise = 1,
-        counterclockwise = 2
+        yellow = 0,
+        blue = 1,
+        red = 2,
+        green = 3
+    }
+    public enum LegoSize
+    {
+        large = 0,
+        small = 1
     }
 }
