@@ -22,7 +22,7 @@
 
         <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
 
-            <Grid Height="95" Width="160" Canvas.Left="730" Canvas.Top="500">
+            <Grid Height="95" Width="160" Canvas.Left="970" Canvas.Top="500">
                 <Button x:Name="UpButton" Content="Up" HorizontalAlignment="Center" VerticalAlignment="Top" Width="40" FontSize="16" Click="MoveUp_Click" />
                 <Button x:Name="DownButton" Content="Down" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="60" FontSize="16" Click="MoveDown_Click" />
                 <Button x:Name="LeftButton" Content="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" FontSize="16" Click="MoveLeft_Click" />
@@ -32,7 +32,7 @@
                 <Button x:Name="DownLeftButton" Content="DL" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="50" FontSize="16" Click="MoveDownLeft_Click" />
                 <Button x:Name="DownRightButton" Content="DR" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="50" FontSize="16" Click="MoveDownRight_Click" />
             </Grid>
-            <Grid Height="95" Width="160" Canvas.Left="730" Canvas.Top="400">
+                <Grid Height="95" Width="160" Canvas.Left="970" Canvas.Top="400">
                 <Button x:Name="RotateRightButton" Content="RotateR" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" FontSize="16" Click="RotateRight_Click" />
                 <Button x:Name="RotateLeftButton" Content="RotateL" HorizontalAlignment="Left" VerticalAlignment="Center" Width="75" FontSize="16" Click="RotateLeft_Click" />
             </Grid>
@@ -43,6 +43,26 @@
                 <Rectangle.Fill>
                     <ImageBrush Source="avares://smartFactoryApp/Assets/robot_platform.png" />
                 </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle x:Name="brickRed0" Width="12" Height="12" Stroke="Black" Fill="Red" Canvas.Left="{Binding BricksView[0].X}" Canvas.Top="{Binding BricksView[0].Y}" >
+                <Rectangle.RenderTransform>
+                    <RotateTransform Angle="{Binding BricksView[0].Angle}" />
+                </Rectangle.RenderTransform>
+            </Rectangle>
+             <Rectangle x:Name="brickRed1" Width="12" Height="12" Stroke="Black" Fill="Yellow" Canvas.Left="{Binding BricksView[1].X}" Canvas.Top="{Binding BricksView[1].Y}" >
+                <Rectangle.RenderTransform>
+                    <RotateTransform Angle="{Binding BricksView[1].Angle}" />
+                </Rectangle.RenderTransform>
+            </Rectangle>
+             <Rectangle x:Name="brickRed2" Width="12" Height="12" Stroke="Black" Fill="Blue" Canvas.Left="{Binding BricksView[2].X}" Canvas.Top="{Binding BricksView[2].Y}" >
+                <Rectangle.RenderTransform>
+                    <RotateTransform Angle="{Binding BricksView[2].Angle}" />
+                </Rectangle.RenderTransform>
+            </Rectangle>
+             <Rectangle x:Name="brickRed3" Width="12" Height="12" Stroke="Black" Fill="Green" Canvas.Left="{Binding BricksView[3].X}" Canvas.Top="{Binding BricksView[3].Y}" >
+                <Rectangle.RenderTransform>
+                    <RotateTransform Angle="{Binding BricksView[3].Angle}" />
+                </Rectangle.RenderTransform>
             </Rectangle>
             <TextBox x:Name="textBoxX" Canvas.Left="100" Canvas.Top="100" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotX}" />
             <TextBox x:Name="textBoxY" Canvas.Left="100" Canvas.Top="150" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotY}" />
