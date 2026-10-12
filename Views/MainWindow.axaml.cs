@@ -59,4 +59,12 @@ public partial class MainWindow : Window
     {
         ViewModel?.ResetRotation();
     }
+    private void StartTimer_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.StartTimer();
+    }
+    private void StopTimer_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.StopTimer();
+    }
 }

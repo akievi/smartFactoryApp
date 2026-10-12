@@ -24,13 +24,13 @@
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="LetterSpacing" Value="1" />
-            <Setter Property="Margin" Value="0,22,0,8" />
+            <Setter Property="Margin" Value="0,14,0,6" />
         </Style>
 
         <!-- Steuer-Buttons -->
         <Style Selector="Button.pad">
             <Setter Property="Width" Value="56" />
-            <Setter Property="Height" Value="56" />
+            <Setter Property="Height" Value="50" />
             <Setter Property="Margin" Value="3" />
             <Setter Property="FontSize" Value="22" />
             <Setter Property="CornerRadius" Value="10" />
@@ -83,34 +83,136 @@
             <Image Source="avares://smartFactoryApp/Assets/factory_plan.png" Stretch="None"/>
 
             <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" ClipToBounds="True">
-                <Rectangle x:Name="robotRectangle" Width="70" Height="50" Stroke="Black" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" >
+                <!-- Zeichenreihenfolge: Baender, dann Steine, dann Roboter (was weiter unten steht, liegt oben) -->
+
+                <!-- 8a: Foerderbaender, Position und Winkel aus dem ViewModel -->
+                <Image Source="avares://smartFactoryApp/Assets/productionline_red.png" Width="90" Height="22"
+                       Canvas.Left="{Binding ProductionRedX}" Canvas.Top="{Binding ProductionRedY}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding ProductionRedAngle}" />
+                    </Image.RenderTransform>
+                </Image>
+                <Image Source="avares://smartFactoryApp/Assets/productionline_blue.png" Width="90" Height="22"
+                       Canvas.Left="{Binding ProductionBlueX}" Canvas.Top="{Binding ProductionBlueY}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding ProductionBlueAngle}" />
+                    </Image.RenderTransform>
+                </Image>
+                <Image Source="avares://smartFactoryApp/Assets/productionline_yellow.png" Width="90" Height="22"
+                       Canvas.Left="{Binding ProductionYellowX}" Canvas.Top="{Binding ProductionYellowY}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding ProductionYellowAngle}" />
+                    </Image.RenderTransform>
+                </Image>
+                <Image Source="avares://smartFactoryApp/Assets/productionline_green.png" Width="90" Height="22"
+                       Canvas.Left="{Binding ProductionGreenX}" Canvas.Top="{Binding ProductionGreenY}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding ProductionGreenAngle}" />
+                    </Image.RenderTransform>
+                </Image>
+
+                <!-- 8b: Steine, je Farbe eine ItemsControl, die fuer jeden Eintrag der Liste ein Rechteck erzeugt -->
+                <ItemsControl ItemsSource="{Binding RedBricks}" Width="900" Height="600">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Styles>
+                        <Style Selector="ContentPresenter" x:DataType="vm:LegoBrickViewModel">
+                            <Setter Property="Canvas.Left" Value="{Binding X}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        </Style>
+                    </ItemsControl.Styles>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LegoBrickViewModel">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#A41125">
+                                <Rectangle.RenderTransform>
+                                    <RotateTransform Angle="{Binding Angle}" />
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding BlueBricks}" Width="900" Height="600">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Styles>
+                        <Style Selector="ContentPresenter" x:DataType="vm:LegoBrickViewModel">
+                            <Setter Property="Canvas.Left" Value="{Binding X}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        </Style>
+                    </ItemsControl.Styles>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LegoBrickViewModel">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#4462DA">
+                                <Rectangle.RenderTransform>
+                                    <RotateTransform Angle="{Binding Angle}" />
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding YellowBricks}" Width="900" Height="600">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Styles>
+                        <Style Selector="ContentPresenter" x:DataType="vm:LegoBrickViewModel">
+                            <Setter Property="Canvas.Left" Value="{Binding X}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        </Style>
+                    </ItemsControl.Styles>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LegoBrickViewModel">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#F9E00A">
+                                <Rectangle.RenderTransform>
+                                    <RotateTransform Angle="{Binding Angle}" />
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding GreenBricks}" Width="900" Height="600">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Styles>
+                        <Style Selector="ContentPresenter" x:DataType="vm:LegoBrickViewModel">
+                            <Setter Property="Canvas.Left" Value="{Binding X}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        </Style>
+                    </ItemsControl.Styles>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LegoBrickViewModel">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#299D24">
+                                <Rectangle.RenderTransform>
+                                    <RotateTransform Angle="{Binding Angle}" />
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- 8c: Roboter mit neuem Bild -->
+                <Rectangle x:Name="robotRectangle" Width="70" Height="50" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" >
                     <Rectangle.RenderTransform>
                         <RotateTransform Angle="{Binding RobotRotationAngle}" />
                     </Rectangle.RenderTransform>
                     <Rectangle.Fill>
-                        <ImageBrush Source="avares://smartFactoryApp/Assets/robot_platform.png" />
+                        <ImageBrush Source="avares://smartFactoryApp/Assets/robot.png" />
                     </Rectangle.Fill>
                 </Rectangle>
-                <Rectangle x:Name="brickRed0" Width="12" Height="12" Stroke="Black" Fill="Red" Canvas.Left="{Binding BricksView[0].X}" Canvas.Top="{Binding BricksView[0].Y}" >
-                    <Rectangle.RenderTransform>
-                        <RotateTransform Angle="{Binding BricksView[0].Angle}" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
-                <Rectangle x:Name="brickRed1" Width="12" Height="12" Stroke="Black" Fill="Yellow" Canvas.Left="{Binding BricksView[1].X}" Canvas.Top="{Binding BricksView[1].Y}" >
-                    <Rectangle.RenderTransform>
-                        <RotateTransform Angle="{Binding BricksView[1].Angle}" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
-                <Rectangle x:Name="brickRed2" Width="12" Height="12" Stroke="Black" Fill="Blue" Canvas.Left="{Binding BricksView[2].X}" Canvas.Top="{Binding BricksView[2].Y}" >
-                    <Rectangle.RenderTransform>
-                        <RotateTransform Angle="{Binding BricksView[2].Angle}" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
-                <Rectangle x:Name="brickRed3" Width="12" Height="12" Stroke="Black" Fill="Green" Canvas.Left="{Binding BricksView[3].X}" Canvas.Top="{Binding BricksView[3].Y}" >
-                    <Rectangle.RenderTransform>
-                        <RotateTransform Angle="{Binding BricksView[3].Angle}" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
+
+                <!-- 8e: X-Koordinate des Roboters oben links, wie im Video -->
+                <TextBlock Canvas.Left="50" Canvas.Top="45" FontSize="22" Foreground="Red" Text="{Binding RobotX}" />
             </Canvas>
         </Grid>
 
@@ -118,7 +220,13 @@
         <Border HorizontalAlignment="Left" Margin="601,0,0,0" Width="299" Padding="26,22">
             <StackPanel>
                 <TextBlock Text="Smart Factory" Foreground="#2D3320" FontSize="20" FontWeight="Bold" />
-                <TextBlock Text="Robotersteuerung" Foreground="#6B7055" FontSize="13" />
+
+                <!-- 8d: Timer der Foerderbaender starten/stoppen -->
+                <TextBlock Classes="header" Text="BAENDER" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="StartButton" Classes="pad wide" Content="Start" FontSize="16" ToolTip.Tip="Foerderbaender starten" Click="StartTimer_Click" />
+                    <Button x:Name="StopButton"  Classes="pad wide" Content="Stop"  FontSize="16" ToolTip.Tip="Foerderbaender anhalten" Click="StopTimer_Click" />
+                </StackPanel>
 
                 <TextBlock Classes="header" Text="BEWEGEN" />
                 <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Center">

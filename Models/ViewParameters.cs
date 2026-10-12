@@ -27,4 +27,11 @@ public static class ViewParameters
     // Grenzen beziehen sich auf die linke obere Ecke, daher um die Objektgroesse verkleinert
     public static Rectangle RobotBorders = new Rectangle(FactoryArea.X, FactoryArea.Y, FactoryArea.Width - 70, FactoryArea.Height - 50);
     public static Rectangle Borders = new Rectangle(FactoryArea.X, FactoryArea.Y, FactoryArea.Width - 12, FactoryArea.Height - 12);
+    public const int productionLineWidth = 90;
+    public const int productionLineHeight = 22;
+    public static Pose ProdRedPose    = new Pose(75, 107, -45);
+    public static Pose ProdBluePose   = new Pose(440, 107, 45);
+    public static Pose ProdYellowPose = new Pose(75, 470, 45);
+    public static Pose ProdGreenPose  = new Pose(440, 470, -45);
+
 }

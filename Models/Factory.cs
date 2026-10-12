@@ -9,26 +9,34 @@ namespace smartFactoryApp.Models;
 public class Factory
 {
     private Robot robot;
-    private List<LegoBrick> bricks = new List<LegoBrick>();
-    public List<LegoBrick> Bricks { get { return bricks; } }
     public double RobotX => robot.Location.X;
     public double RobotY => robot.Location.Y;
     public double RobotRotationAngle => robot.RotationAngle;
     //public Robot Robot => robot;
+    private ProductionLine productionRed = new ProductionLine(ProdRedPose, Parameters.LegoColor.red);
+    private ProductionLine productionBlue = new ProductionLine(ProdBluePose, Parameters.LegoColor.blue);
+    private ProductionLine productionYellow = new ProductionLine(ProdYellowPose, Parameters.LegoColor.yellow);
+    private ProductionLine productionGreen = new ProductionLine(ProdGreenPose, Parameters.LegoColor.green);
+    public List<LegoBrick> RedBricks => productionRed.Bricks;
+    public List<LegoBrick> BlueBricks => productionBlue.Bricks;
+    public List<LegoBrick> YellowBricks => productionYellow.Bricks;
+    public List<LegoBrick> GreenBricks => productionGreen.Bricks;
+    public int ProductionRedX => productionRed.Location.X;
+    public int ProductionRedY => productionRed.Location.Y;
+    public double ProductionRedAngle => productionRed.RotationAngle;
+    public int ProductionBlueX => productionBlue.Location.X;
+    public int ProductionBlueY => productionBlue.Location.Y;
+    public double ProductionBlueAngle => productionBlue.RotationAngle;
+    public int ProductionYellowX => productionYellow.Location.X;
+    public int ProductionYellowY => productionYellow.Location.Y;
+    public double ProductionYellowAngle => productionYellow.RotationAngle;
+    public int ProductionGreenX => productionGreen.Location.X;
+    public int ProductionGreenY => productionGreen.Location.Y;
+    public double ProductionGreenAngle => productionGreen.RotationAngle;
     public Factory()
     {
         robot = new Robot(RobotPose.Location, RobotBorders);
         //robot = new Robot(new Point(450, 300), new Rectangle(10, 10, 590, 890));
-        CreateBricks();
-    }
-    public void CreateBricks()
-    {
-        LegoColor[] colors = { LegoColor.red, LegoColor.yellow, LegoColor.blue, LegoColor.green };
-        for (int i = 0; i < Parameters.bricksPerLine; i++)
-        {
-            Pose pose = new Pose(brickPose.X + 50 * i, brickPose.Y, brickPose.Angle);
-            bricks.Add(new LegoBrick(pose, colors[i % colors.Length], LegoSize.small));
-        }
     }
     public void RobotMove(Direction direction)
     {
@@ -42,23 +50,11 @@ public class Factory
     {
         robot.ResetRotation();
     }
-    int tickCount = 0;
     public void LegoBricksMove()
     {
-        bool movingDirection = tickCount < 10;
-        tickCount = (tickCount + 1) % 20;
-        foreach (LegoBrick brick in bricks)
-        {
-            if (movingDirection)
-            {
-                brick.Move(direction: Direction.up);
-                brick.Move(direction: Direction.left);
-            }
-            else
-            {
-                brick.Move(direction: Direction.down);
-                brick.Move(direction: Direction.right);
-            }
-        }
+        productionRed.move();
+        productionBlue.move();
+        productionYellow.move();
+        productionGreen.move();
     }
 }

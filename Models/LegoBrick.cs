@@ -13,10 +13,13 @@ public class LegoBrick : Beweger
     //  dann muss man hier schreiben: public Parameters.LegoColor Color { get; }
     public LegoSize Size { get; } // hier wird auch implizit size und color als private Variablen angelegt,
     //  die nur über die Properties Color und Size gelesen werden koennen
-    public LegoBrick(Pose pose, LegoColor color, LegoSize size) : base(pose)
+    public LegoBrick(Pose pose, LegoColor color, LegoSize size) : base(pose, ViewParameters.Borders)
     {
-        Borders = ViewParameters.Borders; // sonst ist Borders leer und der Stein kann sich nicht frei bewegen
         Color = color;
         Size = size;
+    }
+    public override string ToString()
+    {
+        return $"{Color} {Size} ({Location.X}, {Location.Y})";
     }
 }
