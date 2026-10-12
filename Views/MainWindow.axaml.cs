@@ -10,7 +10,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
-    private MainViewModel ViewModel => DataContext as MainViewModel;
+    private MainViewModel? ViewModel => DataContext as MainViewModel;
     private void MoveUp_Click(object sender, RoutedEventArgs e)
     {
         ViewModel?.MoveUp();
@@ -54,5 +54,9 @@ public partial class MainWindow : Window
     private void RotateLeft_Click(object sender, RoutedEventArgs e)
     {
         ViewModel?.RotateLeft();
+    }
+    private void ResetRotation_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.ResetRotation();
     }
 }

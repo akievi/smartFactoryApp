@@ -18,7 +18,13 @@ public struct Pose
 
 public static class ViewParameters
 {
-    public static Pose RobotPose = new Pose(450, 300, 0);
+    // graue Fabrikflaeche im factory_plan.png (x/y 38 bis 562)
+    // muss vor RobotPose stehen, da statische Felder in Reihenfolge initialisiert werden
+    public static Rectangle FactoryArea = new Rectangle(38, 38, 525, 525);
+    // Roboter (70x50) mittig in der Fabrikflaeche
+    public static Pose RobotPose = new Pose(FactoryArea.X + (FactoryArea.Width - 70) / 2, FactoryArea.Y + (FactoryArea.Height - 50) / 2, 0);
     public static Pose brickPose = new Pose(400, 250, 45);
-    public static Rectangle Borders = new Rectangle(360, 195, 447, 450);
+    // Grenzen beziehen sich auf die linke obere Ecke, daher um die Objektgroesse verkleinert
+    public static Rectangle RobotBorders = new Rectangle(FactoryArea.X, FactoryArea.Y, FactoryArea.Width - 70, FactoryArea.Height - 50);
+    public static Rectangle Borders = new Rectangle(FactoryArea.X, FactoryArea.Y, FactoryArea.Width - 12, FactoryArea.Height - 12);
 }

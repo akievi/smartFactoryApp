@@ -1,14 +1,10 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Drawing;
 using System.Collections.Generic;
 using smartFactoryApp.Models;
 using static smartFactoryApp.Models.Parameters;
 using static smartFactoryApp.Models.ViewParameters;
-using System.Threading.Tasks;
 
-namespace smartFactoryApp.ViewModels;
+namespace smartFactoryApp.Models;
 
 public class Factory
 {
@@ -21,7 +17,7 @@ public class Factory
     //public Robot Robot => robot;
     public Factory()
     {
-        robot = new Robot(RobotPose.Location, Borders);
+        robot = new Robot(RobotPose.Location, RobotBorders);
         //robot = new Robot(new Point(450, 300), new Rectangle(10, 10, 590, 890));
         CreateBricks();
     }
@@ -41,6 +37,10 @@ public class Factory
     public void RobotRotate(Direction direction)
     {
         robot.Rotate(direction);
+    }
+    public void RobotResetRotation()
+    {
+        robot.ResetRotation();
     }
     int tickCount = 0;
     public void LegoBricksMove()

@@ -6,7 +6,6 @@ using smartFactoryApp.Models;
 using static smartFactoryApp.Models.Parameters;
 using static smartFactoryApp.Models.ViewParameters;
 using System.Threading.Tasks;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using System.Collections.Generic;
 using Avalonia.Threading;
 using System;
@@ -38,42 +37,37 @@ public partial class MainViewModel : ViewModelBase
     public void MoveUp()
     {
         factory.RobotMove(Direction.up);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
+        RobotPoseChanged();
     }
     public void MoveDown()
     {
         factory.RobotMove(Direction.down);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
+        RobotPoseChanged();
     }
     public void MoveLeft()
     {
         factory.RobotMove(Direction.left);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
+        RobotPoseChanged();
     }
     public void MoveRight()
     {
         factory.RobotMove(Direction.right);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
+        RobotPoseChanged();
     }
     public void RotateRight()
     {
         factory.RobotRotate(Parameters.Direction.clockwise);
-        OnPropertyChanged(nameof(RobotRotationAngle));
+        RobotPoseChanged();
     }
     public void RotateLeft()
     {
         factory.RobotRotate(Parameters.Direction.counterclockwise);
-        OnPropertyChanged(nameof(RobotRotationAngle));
+        RobotPoseChanged();
     }
-    private void RobotPoseChanged()
+    public void ResetRotation()
     {
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(RobotRotationAngle));
+        factory.RobotResetRotation();
+        RobotPoseChanged();
     }
     private void BricksPoseChanged()
     {
@@ -81,5 +75,11 @@ public partial class MainViewModel : ViewModelBase
         {
             brick.Refresh();
         }
+    }
+    private void RobotPoseChanged()
+    {
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+        OnPropertyChanged(nameof(RobotRotationAngle));
     }
 }

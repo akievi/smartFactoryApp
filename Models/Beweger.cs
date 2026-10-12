@@ -29,15 +29,10 @@ namespace smartFactoryApp.Models
             //Borders = borders;
             //hier unnoetige Nutzung der Properties, da die privaten Parameter direkt angesprochen werden koennen
         }
-        public Beweger(Point location)
-        {
-            this.location = location;
-            //Location = location;
-        }
         public Beweger(Pose pose)
         {
             Location = pose.Location;
-            RotationAngle = (int)pose.Angle;
+            RotationAngle = (double)pose.Angle;
         }
         public virtual void Move(Parameters.Direction direction)
         {
@@ -75,6 +70,10 @@ namespace smartFactoryApp.Models
                 rotationAngle -= Parameters.degreeStep;
                 rotationAngle = (rotationAngle % 360 + 360) % 360;
             }
+        }
+        public void ResetRotation()
+        {
+            rotationAngle = 0;
         }
     }
 }
