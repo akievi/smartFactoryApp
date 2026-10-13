@@ -209,11 +209,7 @@
                     <Rectangle.Fill>
                         <ImageBrush Source="avares://smartFactoryApp/Assets/robot.png" />
                     </Rectangle.Fill>
-                </Rectangle>
-
-                <!-- 8e: X-Koordinate des Roboters oben links, wie im Video -->
-                <TextBlock Canvas.Left="50" Canvas.Top="45" FontSize="22" Foreground="Red" Text="{Binding RobotX}" />
-            </Canvas>
+                </Rectangle>            </Canvas>
         </Grid>
 
         <!-- Steuerpanel im beigen Bereich des Fabrikplans (x 601 bis 899) -->

@@ -13,34 +13,34 @@ public class Robot : Beweger
     {
         double rad = RotationAngle * Math.PI / 180;
 
-        // Vorwaerts-Richtung: bei 0° nach oben (y wird kleiner), dreht im Uhrzeigersinn mit
-        double vorX = Math.Sin(rad);
-        double vorY = -Math.Cos(rad);
+        // Vorwaerts-Richtung: bei 0° nach oben (y wird kleiner)
+        double relativeUpX = Math.Sin(rad);
+        double relativeUpY = -Math.Cos(rad);
         // Rechts-Richtung: 90° im Uhrzeigersinn zu vorwaerts
-        double rechtsX = Math.Cos(rad);
-        double rechtsY = Math.Sin(rad);
+        double relativeRightX = Math.Cos(rad);
+        double relativeRightY = Math.Sin(rad);
 
         double dx;
         double dy;
         if (direction == Parameters.Direction.up)
         {
-            dx = vorX;
-            dy = vorY;
+            dx = relativeUpX;
+            dy = relativeUpY;
         }
         else if (direction == Parameters.Direction.down)
         {
-            dx = -vorX;
-            dy = -vorY;
+            dx = -relativeUpX;
+            dy = -relativeUpY;
         }
         else if (direction == Parameters.Direction.right)
         {
-            dx = rechtsX;
-            dy = rechtsY;
+            dx = relativeRightX;
+            dy = relativeRightY;
         }
         else if (direction == Parameters.Direction.left)
         {
-            dx = -rechtsX;
-            dy = -rechtsY;
+            dx = -relativeRightX;
+            dy = -relativeRightY;
         }
         else
         {
