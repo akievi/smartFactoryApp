@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using smartFactoryApp.Models;
 
 namespace smartFactoryApp.Models
 {
@@ -8,6 +9,7 @@ namespace smartFactoryApp.Models
         private Point location;
         private Rectangle borders;
         private double rotationAngle = 0;
+        protected Beweger dockobjekt; // Object, which the robot is currently holding, null = robot is holding nothing
         public double RotationAngle
         {
             get { return rotationAngle; }
@@ -56,6 +58,49 @@ namespace smartFactoryApp.Models
                 default:
                     break;
             }
+        }
+        private static bool InnerhalbGrenzen(Point p, Rectangle b)
+        {
+            return (p.X >= b.Left && p.X <= b.Right && p.Y >= b.Top && p.Y <= b.Bottom);
+        }
+        private static Point Greifpunkt(Point p)
+        {
+            return (new Point(p.X + ViewParameters.RobotWidth/2, p.Y));
+        }
+        private bool KollidiertMitProductionLine(Point newLoc)
+        {
+            if (this is not Robot)
+            {
+                return false;
+            }
+            Rectangle robot = new Rectangle(newLoc, new Size(ViewParameters.RobotWidth, ViewParameters.RobotHeight));
+            return robot.IntersectsWith(new Rectangle(new Size(ViewParameters.productionLineWidth, ViewParameters.productionLineHeight)));
+        }
+        public bool Kontakt(Beweger objekt)
+        {
+            Point tcp = Greifpunkt(location);
+            bool proximity = Math.Abs(tcp.X - objekt.Location.X) <= 10 && Math.Abs(tcp.Y - objekt.Location.Y) <= 10;
+
+            if (proximity && dockobjekt == null && objekt is LegoBrick aBrick && !aBrick.Gedockt)
+            {
+                aBrick.Gedockt = true;
+                dockobjekt = objekt;
+                dockobjekt.Location = tcp;
+            }
+            return proximity;
+        }
+        public bool Undock()
+        {
+            if (dockobjekt == null)
+            {
+                return false;
+            }
+            if (dockobjekt is LegoBrick aBrick)
+            {
+                aBrick.Gedockt = false;
+            }
+            dockobjekt = null;
+            return true;
         }
         public void Rotate(Parameters.Direction rotationDirection) 
         {

@@ -33,5 +33,6 @@ public static class ViewParameters
     public static Pose ProdBluePose   = new Pose(440, 107, 45);
     public static Pose ProdYellowPose = new Pose(75, 470, 45);
     public static Pose ProdGreenPose  = new Pose(440, 470, -45);
-
+    public const int RobotWidth = 30;
+    public const int RobotHeight = 66;
 }
