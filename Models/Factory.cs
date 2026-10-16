@@ -41,6 +41,10 @@ public class Factory
     public void RobotMove(Direction direction)
     {
         robot.Move(direction);
+        foreach (var prodLine in ProductionLine.Bricks)
+        {
+            
+        }
     }
     public void RobotRotate(Direction direction)
     {

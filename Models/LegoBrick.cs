@@ -20,6 +20,14 @@ public class LegoBrick : Beweger
         Color = color;
         Size = size;
     }
+    public override void Move(Direction direction)
+    {
+        if (Gedockt)
+        {
+            return;
+        }
+        base.Move(direction);
+    }
     public override string ToString()
     {
         return $"{Color} {Size} ({Location.X}, {Location.Y})";

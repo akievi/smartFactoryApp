@@ -52,6 +52,10 @@ public class Robot : Beweger
         int neuY = Location.Y + (int)Math.Round(dy * Parameters.step);
 
         // jede Achse einzeln gegen die Grenzen pruefen, damit der Roboter an der Wand entlang rutschen kann
+        if (InnerhalbGrenzen(new Point(neuX, neuY), Borders)
+        {
+            
+        }
         if (neuX < Borders.Left || neuX > Borders.Right)
         {
             neuX = Location.X;

@@ -8,6 +8,7 @@ public class ProductionLine
     private Pose pose;
     private Parameters.LegoColor color;
     private List<LegoBrick> bricks = new List<LegoBrick>();
+    public List<LegoBrick> Bricks{  get => bricks; set => bricks = value;}
     private int tickCount = 0;
     private const int stepsPerDirection = 5;
     public Point Location
