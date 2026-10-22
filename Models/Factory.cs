@@ -33,6 +33,15 @@ public class Factory
     public int ProductionGreenX => productionGreen.Location.X;
     public int ProductionGreenY => productionGreen.Location.Y;
     public double ProductionGreenAngle => productionGreen.RotationAngle;
+    // Zusatzbaender ohne Steine
+    private ProductionLine productionRecycle = new ProductionLine(ProdRecyclePose);
+    private ProductionLine productionDelivery = new ProductionLine(ProdDeliveryPose);
+    public int ProductionRecycleX => productionRecycle.Location.X;
+    public int ProductionRecycleY => productionRecycle.Location.Y;
+    public double ProductionRecycleAngle => productionRecycle.RotationAngle;
+    public int ProductionDeliveryX => productionDelivery.Location.X;
+    public int ProductionDeliveryY => productionDelivery.Location.Y;
+    public double ProductionDeliveryAngle => productionDelivery.RotationAngle;
     public Factory()
     {
         robot = new Robot(RobotPose.Location, RobotBorders);
@@ -41,10 +50,54 @@ public class Factory
     public void RobotMove(Direction direction)
     {
         robot.Move(direction);
+        KontaktPruefen();
     }
     public void RobotRotate(Direction direction)
     {
         robot.Rotate(direction);
+        KontaktPruefen();
+    }
+    // Loslassen: der Roboter legt den Stein ab und faehrt danach 4 Schritte nach links, also weg vom Greifer (rechts).
+    // Wuerde das Wegfahren eine Kollision oder ein Anstossen an die Wand verursachen,
+    // wird gar nicht losgelassen (Rueckgabe false).
+    public bool RobotUndock()
+    {
+        const int schritteWeg = 4;
+        if (!robot.HaeltObjekt)
+        {
+            return false;
+        }
+        if (!robot.NachLinksFahrenMoeglich(schritteWeg))
+        {
+            return false;
+        }
+        robot.Undock();
+        for (int i = 0; i < schritteWeg; i++)
+        {
+            robot.Move(Direction.left);
+        }
+        return true;
+    }
+    // Prueft nach jeder Roboterbewegung alle Steine aller Baender: liegt einer am Greifer, wird er angedockt.
+    // Kontakt dockt nur, solange der Roboter noch nichts haelt, also wird hoechstens ein Stein gegriffen.
+    private void KontaktPruefen()
+    {
+        foreach (LegoBrick brick in productionRed.Bricks)
+        {
+            robot.Kontakt(brick);
+        }
+        foreach (LegoBrick brick in productionBlue.Bricks)
+        {
+            robot.Kontakt(brick);
+        }
+        foreach (LegoBrick brick in productionYellow.Bricks)
+        {
+            robot.Kontakt(brick);
+        }
+        foreach (LegoBrick brick in productionGreen.Bricks)
+        {
+            robot.Kontakt(brick);
+        }
     }
     public void RobotResetRotation()
     {
@@ -56,5 +109,6 @@ public class Factory
         productionBlue.move();
         productionYellow.move();
         productionGreen.move();
+        KontaktPruefen(); // ein Stein kann auch von selbst in den Greifer fahren
     }
 }

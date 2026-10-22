@@ -29,7 +29,7 @@
 
         <!-- Steuer-Buttons -->
         <Style Selector="Button.pad">
-            <Setter Property="Width" Value="56" />
+            <Setter Property="Width" Value="52" />
             <Setter Property="Height" Value="50" />
             <Setter Property="Margin" Value="3" />
             <Setter Property="FontSize" Value="22" />
@@ -60,6 +60,15 @@
         <Style Selector="Button.reset:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="#FBBF24" />
             <Setter Property="Foreground" Value="#1F2328" />
+        </Style>
+        <!-- Stop-Button in der Mitte des Pfeilfelds, rot hervorgehoben -->
+        <Style Selector="Button.stop">
+            <Setter Property="Background" Value="#B91C1C" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+        </Style>
+        <Style Selector="Button.stop:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#DC2626" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
         </Style>
 
         <!-- Positionsanzeige -->
@@ -108,6 +117,19 @@
                        Canvas.Left="{Binding ProductionGreenX}" Canvas.Top="{Binding ProductionGreenY}">
                     <Image.RenderTransform>
                         <RotateTransform Angle="{Binding ProductionGreenAngle}" />
+                    </Image.RenderTransform>
+                </Image>
+                <!-- Zusatzbaender ohne Steine -->
+                <Image Source="avares://smartFactoryApp/Assets/productionline_recycle.png" Width="90" Height="22"
+                       Canvas.Left="{Binding ProductionRecycleX}" Canvas.Top="{Binding ProductionRecycleY}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding ProductionRecycleAngle}" />
+                    </Image.RenderTransform>
+                </Image>
+                <Image Source="avares://smartFactoryApp/Assets/productionline_delivery.png" Width="90" Height="22"
+                       Canvas.Left="{Binding ProductionDeliveryX}" Canvas.Top="{Binding ProductionDeliveryY}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding ProductionDeliveryAngle}" />
                     </Image.RenderTransform>
                 </Image>
 
@@ -201,7 +223,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <!-- 8c: Roboter mit neuem Bild -->
+                <!-- 8c: Roboter, ueber den Steinen. Ein getragener Stein ragt seitlich heraus und bleibt so sichtbar -->
                 <Rectangle x:Name="robotRectangle" Width="70" Height="50" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" >
                     <Rectangle.RenderTransform>
                         <RotateTransform Angle="{Binding RobotRotationAngle}" />
@@ -209,13 +231,13 @@
                     <Rectangle.Fill>
                         <ImageBrush Source="avares://smartFactoryApp/Assets/robot.png" />
                     </Rectangle.Fill>
-                </Rectangle>            </Canvas>
+                </Rectangle>
+            </Canvas>
         </Grid>
 
         <!-- Steuerpanel im beigen Bereich des Fabrikplans (x 601 bis 899) -->
-        <Border HorizontalAlignment="Left" Margin="601,0,0,0" Width="299" Padding="26,22">
+        <Border HorizontalAlignment="Left" Margin="601,0,0,0" Width="299" Padding="14,22">
             <StackPanel>
-                <TextBlock Text="Smart Factory" Foreground="#2D3320" FontSize="20" FontWeight="Bold" />
 
                 <!-- 8d: Timer der Foerderbaender starten/stoppen -->
                 <TextBlock Classes="header" Text="BAENDER" />
@@ -225,22 +247,31 @@
                 </StackPanel>
 
                 <TextBlock Classes="header" Text="BEWEGEN" />
+                <!-- Bewegungsmodus: ein Schritt pro Klick oder Dauerfahrt bis Stop -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12" Margin="0,0,0,4">
+                    <RadioButton GroupName="Modus" Content="Schritt" FontSize="13" Foreground="#2D3320"
+                                 IsChecked="{Binding Schrittbewegung}" />
+                    <RadioButton GroupName="Modus" Content="Kontinuierlich" FontSize="13" Foreground="#2D3320"
+                                 IsChecked="{Binding KontinuierlicheBewegung}" />
+                </StackPanel>
                 <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Center">
                     <Button x:Name="UpLeftButton"    Classes="pad" Grid.Row="0" Grid.Column="0" Content="↖" ToolTip.Tip="Hoch links"   Click="MoveUpLeft_Click" />
                     <Button x:Name="UpButton"        Classes="pad" Grid.Row="0" Grid.Column="1" Content="↑" ToolTip.Tip="Hoch"         Click="MoveUp_Click" />
                     <Button x:Name="UpRightButton"   Classes="pad" Grid.Row="0" Grid.Column="2" Content="↗" ToolTip.Tip="Hoch rechts"  Click="MoveUpRight_Click" />
                     <Button x:Name="LeftButton"      Classes="pad" Grid.Row="1" Grid.Column="0" Content="←" ToolTip.Tip="Links"        Click="MoveLeft_Click" />
-                    <Button x:Name="ResetRotationButton" Classes="pad reset" Grid.Row="1" Grid.Column="1" Content="0°" ToolTip.Tip="Orientierung auf 0° zuruecksetzen" Click="ResetRotation_Click" />
+                    <Button x:Name="StopButtonRobot" Classes="pad stop" Grid.Row="1" Grid.Column="1" Content="■" ToolTip.Tip="Roboter anhalten" Click="Stop_Click" />
                     <Button x:Name="RightButton"     Classes="pad" Grid.Row="1" Grid.Column="2" Content="→" ToolTip.Tip="Rechts"       Click="MoveRight_Click" />
                     <Button x:Name="DownLeftButton"  Classes="pad" Grid.Row="2" Grid.Column="0" Content="↙" ToolTip.Tip="Runter links" Click="MoveDownLeft_Click" />
                     <Button x:Name="DownButton"      Classes="pad" Grid.Row="2" Grid.Column="1" Content="↓" ToolTip.Tip="Runter"       Click="MoveDown_Click" />
                     <Button x:Name="DownRightButton" Classes="pad" Grid.Row="2" Grid.Column="2" Content="↘" ToolTip.Tip="Runter rechts" Click="MoveDownRight_Click" />
                 </Grid>
 
-                <TextBlock Classes="header" Text="DREHEN" />
+                <TextBlock Classes="header" Text="DREHEN UND GREIFEN" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="RotateLeftButton"  Classes="pad wide" Content="↺" ToolTip.Tip="Gegen den Uhrzeigersinn" Click="RotateLeft_Click" />
-                    <Button x:Name="RotateRightButton" Classes="pad wide" Content="↻" ToolTip.Tip="Im Uhrzeigersinn"        Click="RotateRight_Click" />
+                    <Button x:Name="RotateLeftButton"  Classes="pad" Content="↺" ToolTip.Tip="Gegen den Uhrzeigersinn" Click="RotateLeft_Click" />
+                    <Button x:Name="ResetRotationButton" Classes="pad reset" Content="0°" ToolTip.Tip="Orientierung auf 0° zuruecksetzen" Click="ResetRotation_Click" />
+                    <Button x:Name="RotateRightButton" Classes="pad" Content="↻" ToolTip.Tip="Im Uhrzeigersinn"        Click="RotateRight_Click" />
+                    <Button x:Name="UndockButton" Classes="pad wide" Content="Loslassen" FontSize="14" ToolTip.Tip="Gegriffenen Stein loslassen" Click="Undock_Click" />
                 </StackPanel>
 
                 <TextBlock Classes="header" Text="POSITION" />
