@@ -32,6 +32,12 @@ public partial class MainViewModel : ViewModelBase
     public int ProductionGreenX => factory.ProductionGreenX;
     public int ProductionGreenY => factory.ProductionGreenY;
     public double ProductionGreenAngle => factory.ProductionGreenAngle;
+    public int ProductionRecycleX => factory.ProductionRecycleX;
+    public int ProductionRecycleY => factory.ProductionRecycleY;
+    public double ProductionRecycleAngle => factory.ProductionRecycleAngle;
+    public int ProductionDeliveryX => factory.ProductionDeliveryX;
+    public int ProductionDeliveryY => factory.ProductionDeliveryY;
+    public double ProductionDeliveryAngle => factory.ProductionDeliveryAngle;
     public double RobotX => factory.RobotX;
     public double RobotY => factory.RobotY;
     public double RobotRotationAngle => factory.RobotRotationAngle;
@@ -57,11 +63,58 @@ public partial class MainViewModel : ViewModelBase
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
         timer.Tick += Timer_Tick;
+        robotTimer = new DispatcherTimer();
+        robotTimer.Interval = TimeSpan.FromMilliseconds(robotTimerInterval);
+        robotTimer.Tick += RobotTimer_Tick;
     }
+    // Eigener Timer fuer die kontinuierliche Roboterbewegung, unabhaengig vom Baender-Timer
+    private DispatcherTimer robotTimer;
+    // Aktueller Fahrbefehl des Roboters: die Richtungen, die er bei jedem Roboter-Tick ausfuehrt.
+    // Eine Diagonale besteht aus zwei Richtungen (z.B. up + left).
+    private List<Direction> fahrbefehl = new List<Direction>();
+
+    // Bewegungsmodus, umschaltbar ueber die zwei RadioButtons im Panel
+    private bool kontinuierlich = false;
+    public bool Schrittbewegung
+    {
+        get { return !kontinuierlich; }
+        set
+        {
+            if (value)
+            {
+                ModusSetzen(false);
+            }
+        }
+    }
+    public bool KontinuierlicheBewegung
+    {
+        get { return kontinuierlich; }
+        set
+        {
+            if (value)
+            {
+                ModusSetzen(true);
+            }
+        }
+    }
+    // Beim Umschalten haelt der Roboter immer an, damit kein alter Befehl im neuen Modus weiterlaeuft
+    private void ModusSetzen(bool neuKontinuierlich)
+    {
+        Stop();
+        kontinuierlich = neuKontinuierlich;
+        OnPropertyChanged(nameof(Schrittbewegung));
+        OnPropertyChanged(nameof(KontinuierlicheBewegung));
+    }
+
     private void Timer_Tick(object? sender, EventArgs e)
     {
         factory.LegoBricksMove();
-        BricksPoseChanged();
+        RobotPoseChanged();   // ein Stein kann gerade gegriffen worden sein; ruft auch BricksPoseChanged auf
+    }
+    private void RobotTimer_Tick(object? sender, EventArgs e)
+    {
+        BefehlAusfuehren(fahrbefehl);
+        RobotPoseChanged();
     }
     public void StartTimer()
     {
@@ -71,39 +124,92 @@ public partial class MainViewModel : ViewModelBase
     {
         timer.Stop();
     }
+    // Stop-Button: kontinuierliche Roboterbewegung beenden, die Baender laufen weiter
+    public void Stop()
+    {
+        robotTimer.Stop();
+        fahrbefehl.Clear();
+    }
     public void MoveUp()
     {
-        factory.RobotMove(Direction.up);
-        RobotPoseChanged();
+        BefehlSetzen(Direction.up);
     }
     public void MoveDown()
     {
-        factory.RobotMove(Direction.down);
-        RobotPoseChanged();
+        BefehlSetzen(Direction.down);
     }
     public void MoveLeft()
     {
-        factory.RobotMove(Direction.left);
-        RobotPoseChanged();
+        BefehlSetzen(Direction.left);
     }
     public void MoveRight()
     {
-        factory.RobotMove(Direction.right);
-        RobotPoseChanged();
+        BefehlSetzen(Direction.right);
+    }
+    public void MoveUpLeft()
+    {
+        BefehlSetzen(Direction.up, Direction.left);
+    }
+    public void MoveUpRight()
+    {
+        BefehlSetzen(Direction.up, Direction.right);
+    }
+    public void MoveDownLeft()
+    {
+        BefehlSetzen(Direction.down, Direction.left);
+    }
+    public void MoveDownRight()
+    {
+        BefehlSetzen(Direction.down, Direction.right);
     }
     public void RotateRight()
     {
-        factory.RobotRotate(Parameters.Direction.clockwise);
-        RobotPoseChanged();
+        BefehlSetzen(Direction.clockwise);
     }
     public void RotateLeft()
     {
-        factory.RobotRotate(Parameters.Direction.counterclockwise);
-        RobotPoseChanged();
+        BefehlSetzen(Direction.counterclockwise);
+    }
+    // Kontinuierlicher Modus: Befehl speichern (ersetzt den vorherigen) und den Roboter-Timer starten,
+    // der Roboter faehrt dann bis Stop, 0° oder Moduswechsel weiter.
+    // Schrittmodus: genau ein Schritt pro Klick.
+    private void BefehlSetzen(params Direction[] richtungen)
+    {
+        if (kontinuierlich)
+        {
+            fahrbefehl = new List<Direction>(richtungen);
+            robotTimer.Start();
+        }
+        else
+        {
+            BefehlAusfuehren(richtungen);
+            RobotPoseChanged();
+        }
+    }
+    // Fuehrt einen Schritt pro Richtung aus: Drehrichtungen drehen, alle anderen fahren
+    private void BefehlAusfuehren(IEnumerable<Direction> richtungen)
+    {
+        foreach (Direction richtung in richtungen)
+        {
+            if (richtung == Direction.clockwise || richtung == Direction.counterclockwise)
+            {
+                factory.RobotRotate(richtung);
+            }
+            else
+            {
+                factory.RobotMove(richtung);
+            }
+        }
     }
     public void ResetRotation()
     {
+        Stop(); // 0° beendet eine laufende kontinuierliche Bewegung
         factory.RobotResetRotation();
+        RobotPoseChanged();
+    }
+    public void Undock()
+    {
+        factory.RobotUndock();
         RobotPoseChanged();
     }
     private void BricksPoseChanged()
@@ -118,5 +224,7 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
         OnPropertyChanged(nameof(RobotRotationAngle));
+        // ein gegriffener Stein bewegt sich mit dem Roboter, also auch die Steine neu anzeigen
+        BricksPoseChanged();
     }
 }

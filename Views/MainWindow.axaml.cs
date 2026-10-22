@@ -29,23 +29,23 @@ public partial class MainWindow : Window
     }
     private void MoveUpLeft_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel?.MoveUp();
-        ViewModel?.MoveLeft();
+        ViewModel?.MoveUpLeft();
     }
     private void MoveUpRight_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel?.MoveUp();
-        ViewModel?.MoveRight();
+        ViewModel?.MoveUpRight();
     }
     private void MoveDownLeft_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel?.MoveDown();
-        ViewModel?.MoveLeft();
+        ViewModel?.MoveDownLeft();
     }
     private void MoveDownRight_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel?.MoveDown();
-        ViewModel?.MoveRight();
+        ViewModel?.MoveDownRight();
+    }
+    private void Stop_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.Stop();
     }
     private void RotateRight_Click(object sender, RoutedEventArgs e)
     {
@@ -58,6 +58,10 @@ public partial class MainWindow : Window
     private void ResetRotation_Click(object sender, RoutedEventArgs e)
     {
         ViewModel?.ResetRotation();
+    }
+    private void Undock_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.Undock();
     }
     private void StartTimer_Click(object sender, RoutedEventArgs e)
     {
