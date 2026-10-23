@@ -12,11 +12,12 @@ namespace smartFactoryApp.Models
         protected Beweger? dockobjekt; // Object, which the robot is currently holding, null = robot is holding nothing
         private Beweger? zuletztLosgelassen; // gerade losgelassener Stein, wird erst wieder gegriffen, wenn der Greifer sich entfernt hat
         public bool HaeltObjekt => dockobjekt != null;
+        private static readonly Rectangle TestRectangle = new Rectangle(ViewParameters.TestRectangle.X, ViewParameters.TestRectangle.Y, ViewParameters.TestRectangleWidth, ViewParameters.TestRectangleHeight);
         public double RotationAngle
         {
             get { return rotationAngle; }
             set { rotationAngle = value; }
-            }
+        }
         public Point Location
         {
             get { return location; }
@@ -189,16 +190,6 @@ namespace smartFactoryApp.Models
             int objektMitteY = objekt.Location.Y + ViewParameters.BrickSize / 2;
             bool proximity = Math.Abs(tcp.X - objektMitteX) <= 10 && Math.Abs(tcp.Y - objektMitteY) <= 10;
 
-            // den gerade losgelassenen Stein nicht sofort wieder greifen
-            if (objekt == zuletztLosgelassen)
-            {
-                if (!proximity)
-                {
-                    zuletztLosgelassen = null; // Greifer ist weg, ab jetzt darf er wieder gegriffen werden
-                }
-                return proximity;
-            }
-
             if (proximity && dockobjekt == null && objekt is LegoBrick aBrick && !aBrick.Gedockt)
             {
                 aBrick.Gedockt = true;
@@ -224,9 +215,14 @@ namespace smartFactoryApp.Models
             {
                 return false;
             }
+            if (!AufLinie(TestRectangle, dockobjekt.Location))
+            {
+                return false;
+            }
             if (dockobjekt is LegoBrick aBrick)
             {
                 aBrick.Gedockt = false;
+                aBrick.Abgeliefert = true;
             }
             zuletztLosgelassen = dockobjekt;
             dockobjekt = null;
@@ -261,6 +257,11 @@ namespace smartFactoryApp.Models
             }
             rotationAngle = 0;
             DockobjektNachfuehren();
+        }
+        private static bool AufLinie(Rectangle line, Point p)
+        {
+            line.Inflate(10, 10);
+            return line.Contains(p);
         }
     }
 }

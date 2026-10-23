@@ -20,6 +20,10 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<LegoBrickViewModel> BlueBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> YellowBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> GreenBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
+    public int TestRectangleX => ViewParameters.TestRectangle.X;
+    public int TestRectangleY => ViewParameters.TestRectangle.Y;
+    public int TestRectangleWidth => ViewParameters.TestRectangleWidth;
+    public int TestRectangleHeight => ViewParameters.TestRectangleHeight;
     public int ProductionRedX => factory.ProductionRedX;
     public int ProductionRedY => factory.ProductionRedY;
     public double ProductionRedAngle => factory.ProductionRedAngle;

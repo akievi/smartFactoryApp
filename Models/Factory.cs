@@ -72,9 +72,12 @@ public class Factory
             return false;
         }
         robot.Undock();
-        for (int i = 0; i < schritteWeg; i++)
+        if (robot.HaeltObjekt == false)
         {
-            robot.Move(Direction.left);
+            for (int i = 0; i < schritteWeg; i++)
+            {
+                robot.Move(Direction.left);
+            }
         }
         return true;
     }
