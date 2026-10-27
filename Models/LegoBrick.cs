@@ -9,8 +9,14 @@ public class LegoBrick : Beweger
 {
     // private LegoColor color;
     // private LegoSize size;
-    private bool gedockt = false;
+    public bool gedockt = false;
+    public bool abgeliefert = false;
+    public bool Abgeliefert { get => abgeliefert; set => abgeliefert = value;}
+    private int brickWidth = 20;
+    private Point originalLocation;
+    private int versatz = 0;
     public bool Gedockt { get => gedockt; set => gedockt = value;}
+    private int deliveryRight = ViewParameters.TestRectangle.X + ViewParameters.TestRectangleWidth;
     public LegoColor Color { get; } // Wenn (using static smartFactoryApp.Models.Parameters;) nicht da ist,
     //  dann muss man hier schreiben: public Parameters.LegoColor Color { get; }
     public LegoSize Size { get; } // hier wird auch implizit size und color als private Variablen angelegt,
@@ -19,14 +25,34 @@ public class LegoBrick : Beweger
     {
         Color = color;
         Size = size;
+        originalLocation = pose.Location;
     }
     public override void Move(Direction direction)
     {
+        if (direction == Parameters.Direction.right) versatz++;
+        else if (direction == Parameters.Direction.left) versatz--;
+        else if (direction == Parameters.Direction.up) versatz++;
+        else if (direction == Parameters.Direction.down) versatz--;     
         if (Gedockt)
         {
             return;
         }
-        base.Move(direction);
+        if (Abgeliefert)
+        {
+            if (Location.X - (brickWidth/2) <= deliveryRight)
+            {
+                base.Move(Parameters.Direction.right);
+            }
+            else if (versatz == 0)
+            {
+                Location = originalLocation;
+                abgeliefert = false;
+            }   
+        }
+        else
+        {
+            base.Move(direction);
+        }
     }
     public override string ToString()
     {

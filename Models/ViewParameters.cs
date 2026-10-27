@@ -49,4 +49,7 @@ public static class ViewParameters
     // Recycle in der Fabrikmitte (299, 299), Delivery oben mittig (299, 64)
     public static Pose ProdRecyclePose  = new Pose(254, 288, 0);
     public static Pose ProdDeliveryPose = new Pose(254, 53, 0);
+    public static readonly Point TestRectangle = new Point(FactoryArea.X + (FactoryArea.Width - RobotWidth) / 2, FactoryArea.Y + 70);
+    public static readonly int TestRectangleWidth = 60;
+    public static readonly int TestRectangleHeight = 20;
 }
