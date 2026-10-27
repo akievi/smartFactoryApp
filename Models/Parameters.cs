@@ -28,4 +28,21 @@ public class Parameters
         large = 0,
         small = 1
     }
+    public enum BrickStatus
+    {
+        onProductionLine,   // liegt an seinem Farbband und faehrt dort hin und her
+        docked,             // haengt am Greifer
+        toCustomer,         // faehrt nach rechts zum Kunden
+        toRecycling,        // faehrt nach links zum Recycling
+        onRecycleLine,      // liegt repariert am Recycle-Band und kann neu gegriffen werden
+        delivered           // beim Kunden angekommen, nicht mehr im Spiel
+    }
+    public enum UndockResult
+    {
+        delivered,          // ok, Stein geht zum Kunden
+        defect,             // ok abgelegt, aber defekt, geht zum Recycling
+        noBrickDocked,      // Roboter haelt nichts
+        notOnDeliveryLine,  // Stein ist nicht ueber der Delivery-Zone
+        blocked             // Roboter koennte nach dem Ablegen nicht wegfahren (Kollision)
+    }
 }

@@ -45,11 +45,23 @@ public static class ViewParameters
     public static Pose ProdBluePose   = new Pose(402, 243, 90);
     public static Pose ProdYellowPose = new Pose(116, 433, 0);
     public static Pose ProdGreenPose  = new Pose(392, 433, 0);
+
     // Zusatzbaender ohne Steine, beide horizontal:
     // Recycle in der Fabrikmitte (299, 299), Delivery oben mittig (299, 64)
     public static Pose ProdRecyclePose  = new Pose(254, 288, 0);
-    public static Pose ProdDeliveryPose = new Pose(254, 53, 0);
-    public static readonly Point TestRectangle = new Point(FactoryArea.X + (FactoryArea.Width - RobotWidth) / 2, FactoryArea.Y + 70);
-    public static readonly int TestRectangleWidth = 60;
-    public static readonly int TestRectangleHeight = 20;
+    public static Pose ProdDeliveryPose = new Pose(206, 49, 0);
+    // gesamtes Delivery-Band: ueberall darf abgelegt werden, jede Ablage zaehlt als Delivery
+    // (muss unter ProdDeliveryPose stehen, statische Felder werden in Reihenfolge initialisiert)
+    public static Rectangle DeliveryZone = new Rectangle(ProdDeliveryPose.X, ProdDeliveryPose.Y, ProductionDeliveryWidth, ProductionDeliveryHeight);
+    // Delivery-Band mit drei Zonen (Recycle | Delivery | Customer), Mitte bleibt bei (299, 64)
+    public const int ProductionDeliveryWidth = 186;
+    public const int ProductionDeliveryHeight = 30;
+
+    // Pfeile links und rechts vom Delivery-Band
+    public const int ToRecycleLineWidth = 110;
+    public const int ToRecycleLineHeight = 40;
+    public static Point ToRecycleLinePosition = new Point(92, 44);
+    public const int ToCustomerLineWidth = 110;
+    public const int ToCustomerLineHeight = 40;
+    public static Point ToCustomerLinePosition = new Point(396, 44);
 }

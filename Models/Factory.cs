@@ -60,26 +60,27 @@ public class Factory
     // Loslassen: der Roboter legt den Stein ab und faehrt danach 4 Schritte nach links, also weg vom Greifer (rechts).
     // Wuerde das Wegfahren eine Kollision oder ein Anstossen an die Wand verursachen,
     // wird gar nicht losgelassen (Rueckgabe false).
-    public bool RobotUndock()
+    public UndockResult RobotUndock()
     {
         const int schritteWeg = 4;
         if (!robot.HaeltObjekt)
         {
-            return false;
+            return UndockResult.noBrickDocked;
         }
         if (!robot.NachLinksFahrenMoeglich(schritteWeg))
         {
-            return false;
+            return UndockResult.blocked;
         }
-        robot.Undock();
-        if (robot.HaeltObjekt == false)
+        UndockResult ergebnis = robot.Undock();
+        if (ergebnis != UndockResult.delivered)
         {
-            for (int i = 0; i < schritteWeg; i++)
-            {
-                robot.Move(Direction.left);
-            }
+            return ergebnis;   // z.B. notOnDeliveryLine einfach durchreichen
         }
-        return true;
+        for (int i = 0; i < schritteWeg; i++)
+        {
+            robot.Move(Direction.left);
+        }
+        return UndockResult.delivered;
     }
     // Prueft nach jeder Roboterbewegung alle Steine aller Baender: liegt einer am Greifer, wird er angedockt.
     // Kontakt dockt nur, solange der Roboter noch nichts haelt, also wird hoechstens ein Stein gegriffen.

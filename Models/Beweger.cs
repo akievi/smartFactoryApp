@@ -10,9 +10,7 @@ namespace smartFactoryApp.Models
         private Rectangle borders;
         private double rotationAngle = 0;
         protected Beweger? dockobjekt; // Object, which the robot is currently holding, null = robot is holding nothing
-        private Beweger? zuletztLosgelassen; // gerade losgelassener Stein, wird erst wieder gegriffen, wenn der Greifer sich entfernt hat
         public bool HaeltObjekt => dockobjekt != null;
-        private static readonly Rectangle TestRectangle = new Rectangle(ViewParameters.TestRectangle.X, ViewParameters.TestRectangle.Y, ViewParameters.TestRectangleWidth, ViewParameters.TestRectangleHeight);
         public double RotationAngle
         {
             get { return rotationAngle; }
@@ -108,7 +106,7 @@ namespace smartFactoryApp.Models
             PointF[] robot = Ecken(newLoc, ViewParameters.RobotWidth, ViewParameters.RobotHeight, winkel);
 
             Pose[] baender = { ViewParameters.ProdRedPose, ViewParameters.ProdBluePose, ViewParameters.ProdYellowPose, ViewParameters.ProdGreenPose,
-                               ViewParameters.ProdRecyclePose, ViewParameters.ProdDeliveryPose };
+                               ViewParameters.ProdRecyclePose };
             foreach (Pose band in baender)
             {
                 PointF[] bandEcken = Ecken(band.Location, ViewParameters.productionLineWidth, ViewParameters.productionLineHeight, band.Angle);
@@ -116,6 +114,11 @@ namespace smartFactoryApp.Models
                 {
                     return true;
                 }
+            }
+            PointF[] deliveryEcken = Ecken(ViewParameters.ProdDeliveryPose.Location, ViewParameters.ProductionDeliveryWidth, ViewParameters.ProductionDeliveryHeight, ViewParameters.ProdDeliveryPose.Angle);
+            if (UeberschneidenSich(robot, deliveryEcken))
+            {
+                return true;
             }
             return false;
         }
@@ -190,9 +193,10 @@ namespace smartFactoryApp.Models
             int objektMitteY = objekt.Location.Y + ViewParameters.BrickSize / 2;
             bool proximity = Math.Abs(tcp.X - objektMitteX) <= 10 && Math.Abs(tcp.Y - objektMitteY) <= 10;
 
-            if (proximity && dockobjekt == null && objekt is LegoBrick aBrick && !aBrick.Gedockt)
+            if (proximity && dockobjekt == null && objekt is LegoBrick aBrick && 
+                (aBrick.Status == Parameters.BrickStatus.onProductionLine || aBrick.Status == Parameters.BrickStatus.onRecycleLine))
             {
-                aBrick.Gedockt = true;
+                aBrick.Status = Parameters.BrickStatus.docked;
                 dockobjekt = objekt;
                 DockobjektNachfuehren();
             }
@@ -209,24 +213,22 @@ namespace smartFactoryApp.Models
             Point trage = Tragepunkt(location);
             dockobjekt.Location = new Point(trage.X - ViewParameters.BrickSize / 2, trage.Y - ViewParameters.BrickSize / 2);
         }
-        public bool Undock()
+        public Parameters.UndockResult Undock()
         {
             if (dockobjekt == null)
             {
-                return false;
+                return Parameters.UndockResult.noBrickDocked;
             }
-            if (!AufLinie(TestRectangle, dockobjekt.Location))
+            if (!AufDeliveryLinie())
             {
-                return false;
+                return Parameters.UndockResult.notOnDeliveryLine;
             }
             if (dockobjekt is LegoBrick aBrick)
             {
-                aBrick.Gedockt = false;
-                aBrick.Abgeliefert = true;
+                aBrick.Status = Parameters.BrickStatus.toCustomer;
             }
-            zuletztLosgelassen = dockobjekt;
             dockobjekt = null;
-            return true;
+            return Parameters.UndockResult.delivered;
         }
         public void Rotate(Parameters.Direction rotationDirection)
         {
@@ -262,6 +264,16 @@ namespace smartFactoryApp.Models
         {
             line.Inflate(10, 10);
             return line.Contains(p);
+        }
+        private bool AufDeliveryLinie()
+        {
+            if (dockobjekt == null)
+            {
+                return false;
+            }
+            Point steinMitte = new Point(dockobjekt.Location.X + ViewParameters.BrickSize / 2,
+                                        dockobjekt.Location.Y + ViewParameters.BrickSize / 2);
+            return AufLinie(ViewParameters.DeliveryZone, steinMitte);
         }
     }
 }
