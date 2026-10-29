@@ -56,6 +56,12 @@ public static class ViewParameters
     // Delivery-Band mit drei Zonen (Recycle | Delivery | Customer), Mitte bleibt bei (299, 64)
     public const int ProductionDeliveryWidth = 186;
     public const int ProductionDeliveryHeight = 30;
+    // vier Ablageplaetze fuer reparierte Steine, oben auf dem Recycle-Band nebeneinander
+    public const int RecyclePlaetze = 4;
+    public static Point RecyclePlatzPosition(int platz)
+    {
+        return new Point(ProdRecyclePose.X + 6 + platz * 22, ProdRecyclePose.Y - 14);
+    }
 
     // Pfeile links und rechts vom Delivery-Band
     public const int ToRecycleLineWidth = 110;

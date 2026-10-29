@@ -11,6 +11,7 @@ namespace smartFactoryApp.Models
         private double rotationAngle = 0;
         protected Beweger? dockobjekt; // Object, which the robot is currently holding, null = robot is holding nothing
         public bool HaeltObjekt => dockobjekt != null;
+        public Beweger? Dockobjekt => dockobjekt;
         public double RotationAngle
         {
             get { return rotationAngle; }

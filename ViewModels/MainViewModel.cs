@@ -16,6 +16,7 @@ public partial class MainViewModel : ViewModelBase
 {
     Factory factory;
     DispatcherTimer timer;
+    [ObservableProperty] private string undockInfo = "";
     public ObservableCollection<LegoBrickViewModel> RedBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> BlueBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> YellowBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
@@ -213,7 +214,27 @@ public partial class MainViewModel : ViewModelBase
     }
     public void Undock()
     {
-        factory.RobotUndock();
+        UndockResult ergebnis = factory.RobotUndock();
+        if (ergebnis == UndockResult.delivered)
+        {
+            UndockInfo = "Brick delivered, going to customer";
+        }
+        else if (ergebnis == UndockResult.defect)
+        {
+            UndockInfo = "Brick is defective, going to recycling";
+        }
+        else if (ergebnis == UndockResult.noBrickDocked)
+        {
+            UndockInfo = "No brick docked: pick up a brick first";
+        }
+        else if (ergebnis == UndockResult.notOnDeliveryLine)
+        {
+            UndockInfo = "Brick is not on the delivery line: move it there first";
+        }
+        else if (ergebnis == UndockResult.blocked)
+        {
+            UndockInfo = "Robot is blocked";
+        }
         RobotPoseChanged();
     }
     private void BricksPoseChanged()

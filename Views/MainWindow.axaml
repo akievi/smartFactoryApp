@@ -278,6 +278,9 @@
                     <Button x:Name="RotateRightButton" Classes="pad" Content="↻" ToolTip.Tip="Im Uhrzeigersinn"        Click="RotateRight_Click" />
                     <Button x:Name="UndockButton" Classes="pad wide" Content="Loslassen" FontSize="14" ToolTip.Tip="Gegriffenen Stein loslassen" Click="Undock_Click" />
                 </StackPanel>
+                
+                <TextBlock Text="{Binding UndockInfo}" TextWrapping="Wrap" FontSize="13"
+                    Foreground="#2D3320" Margin="0,6,0,0" />
 
                 <TextBlock Classes="header" Text="POSITION" />
                 <Border Background="#DCE1C2" CornerRadius="10" Padding="14,10">
