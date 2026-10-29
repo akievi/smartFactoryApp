@@ -126,19 +126,17 @@
                         <RotateTransform Angle="{Binding ProductionRecycleAngle}" />
                     </Image.RenderTransform>
                 </Image>
-                <Image Source="avares://smartFactoryApp/Assets/productionline_delivery.png" Width="90" Height="22"
+                <Image Source="avares://smartFactoryApp/Assets/delivery_line.png" Width="186" Height="30"
                        Canvas.Left="{Binding ProductionDeliveryX}" Canvas.Top="{Binding ProductionDeliveryY}">
                     <Image.RenderTransform>
                         <RotateTransform Angle="{Binding ProductionDeliveryAngle}" />
                     </Image.RenderTransform>
                 </Image>
-                <Rectangle Width="{Binding TestRectangleWidth}" Height="{Binding TestRectangleHeight}" Fill="#4462DA"
-                        Canvas.Left="{Binding TestRectangleX}"
-                        Canvas.Top="{Binding TestRectangleY}">
-                    <Rectangle.RenderTransform>
-                        <RotateTransform Angle="0" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
+                                <!-- Pfeile neben dem Delivery-Band -->
+                <Image Source="avares://smartFactoryApp/Assets/arrow_recycling.png" Width="110" Height="40"
+                       Canvas.Left="{Binding ToRecycleX}" Canvas.Top="{Binding ToRecycleY}" />
+                <Image Source="avares://smartFactoryApp/Assets/arrow_customers.png" Width="110" Height="40"
+                       Canvas.Left="{Binding ToCustomerX}" Canvas.Top="{Binding ToCustomerY}" />
 
                 <!-- 8b: Steine, je Farbe eine ItemsControl, die fuer jeden Eintrag der Liste ein Rechteck erzeugt -->
                 <ItemsControl ItemsSource="{Binding RedBricks}" Width="900" Height="600">
@@ -280,6 +278,9 @@
                     <Button x:Name="RotateRightButton" Classes="pad" Content="↻" ToolTip.Tip="Im Uhrzeigersinn"        Click="RotateRight_Click" />
                     <Button x:Name="UndockButton" Classes="pad wide" Content="Loslassen" FontSize="14" ToolTip.Tip="Gegriffenen Stein loslassen" Click="Undock_Click" />
                 </StackPanel>
+                
+                <TextBlock Text="{Binding UndockInfo}" TextWrapping="Wrap" FontSize="13"
+                    Foreground="#2D3320" Margin="0,6,0,0" />
 
                 <TextBlock Classes="header" Text="POSITION" />
                 <Border Background="#DCE1C2" CornerRadius="10" Padding="14,10">

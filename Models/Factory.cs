@@ -1,4 +1,5 @@
 using System.Drawing;
+using System;
 using System.Collections.Generic;
 using smartFactoryApp.Models;
 using static smartFactoryApp.Models.Parameters;
@@ -12,6 +13,8 @@ public class Factory
     public double RobotX => robot.Location.X;
     public double RobotY => robot.Location.Y;
     public double RobotRotationAngle => robot.RotationAngle;
+    private Random zufall = new Random();
+    private bool naechsterZumRecycling = false;
     //public Robot Robot => robot;
     private ProductionLine productionRed = new ProductionLine(ProdRedPose, Parameters.LegoColor.red);
     private ProductionLine productionBlue = new ProductionLine(ProdBluePose, Parameters.LegoColor.blue);
@@ -60,26 +63,39 @@ public class Factory
     // Loslassen: der Roboter legt den Stein ab und faehrt danach 4 Schritte nach links, also weg vom Greifer (rechts).
     // Wuerde das Wegfahren eine Kollision oder ein Anstossen an die Wand verursachen,
     // wird gar nicht losgelassen (Rueckgabe false).
-    public bool RobotUndock()
+    public UndockResult RobotUndock()
     {
         const int schritteWeg = 4;
         if (!robot.HaeltObjekt)
         {
-            return false;
+            return UndockResult.noBrickDocked;
         }
         if (!robot.NachLinksFahrenMoeglich(schritteWeg))
         {
-            return false;
+            return UndockResult.blocked;
         }
-        robot.Undock();
-        if (robot.HaeltObjekt == false)
+        LegoBrick? stein = robot.Dockobjekt as LegoBrick;
+        UndockResult ergebnis = robot.Undock();
+        if (ergebnis != UndockResult.delivered)
         {
-            for (int i = 0; i < schritteWeg; i++)
-            {
-                robot.Move(Direction.left);
-            }
+            return ergebnis;   // z.B. notOnDeliveryLine einfach durchreichen
         }
-        return true;
+        for (int i = 0; i < schritteWeg; i++)
+        {
+            robot.Move(Direction.left);
+        }
+        naechsterZumRecycling = zufall.Next(2) == 0;
+        if (naechsterZumRecycling && stein != null)
+        {
+            int platz = FreierRecyclePlatz();
+            if (platz >= 0)
+            {
+                stein.ZumRecycling(platz);
+                return UndockResult.defect;
+            }
+            // alle vier Recycle-Plaetze belegt: Stein geht ausnahmsweise trotzdem zum Kunden
+        }
+        return UndockResult.delivered;
     }
     // Prueft nach jeder Roboterbewegung alle Steine aller Baender: liegt einer am Greifer, wird er angedockt.
     // Kontakt dockt nur, solange der Roboter noch nichts haelt, also wird hoechstens ein Stein gegriffen.
@@ -113,5 +129,34 @@ public class Factory
         productionYellow.move();
         productionGreen.move();
         KontaktPruefen(); // ein Stein kann auch von selbst in den Greifer fahren
+    }
+    private List<LegoBrick> AlleBricks()
+    {
+        List<LegoBrick> alle = new List<LegoBrick>();
+        alle.AddRange(productionRed.Bricks);
+        alle.AddRange(productionBlue.Bricks);
+        alle.AddRange(productionYellow.Bricks);
+        alle.AddRange(productionGreen.Bricks);
+        return alle;
+    }
+    private int FreierRecyclePlatz()
+    {
+        for (int platz = 0; platz < ViewParameters.RecyclePlaetze; platz++)
+        {
+            bool belegt = false;
+            foreach (LegoBrick b in AlleBricks())
+            {
+                if (b.RecyclePlatz == platz &&
+                    (b.Status == BrickStatus.toRecycling || b.Status == BrickStatus.onRecycleLine))
+                {
+                    belegt = true;
+                }
+            }
+            if (!belegt)
+            {
+                return platz;
+            }
+        }
+        return -1;
     }
 }
