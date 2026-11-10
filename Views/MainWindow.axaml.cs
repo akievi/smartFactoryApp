@@ -71,4 +71,9 @@ public partial class MainWindow : Window
     {
         ViewModel?.StopTimer();
     }
+    private void SetupProductionLines_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.SetupProductionLines();
+        SetupButton.IsEnabled = false;
+    }
 }

@@ -1,6 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Media;
 using smartFactoryApp.Models;
 
 namespace smartFactoryApp.ViewModels;
@@ -14,6 +15,7 @@ public partial class LegoBrickViewModel : ViewModelBase
     // Groesse des Steins in Pixeln, haengt nur von brick.Size ab und aendert sich nie (daher kein ObservableProperty)
     public int Width { get; }
     public int Height { get; }
+    public IBrush BrickColor { get; }
     public LegoBrickViewModel(LegoBrick brick)
     {
         _brick = brick;
@@ -26,6 +28,22 @@ public partial class LegoBrickViewModel : ViewModelBase
         {
             Width = 12;
             Height = 12;
+        }
+        if (brick.Color == Parameters.LegoColor.yellow)
+        {
+            BrickColor = new SolidColorBrush(Color.Parse("#F9E00A"));
+        }
+        else if (brick.Color == Parameters.LegoColor.blue)
+        {
+            BrickColor = new SolidColorBrush(Color.Parse("#4462DA"));
+        }
+        else if (brick.Color == Parameters.LegoColor.red)
+        {
+            BrickColor = new SolidColorBrush(Color.Parse("#A41125"));
+        }
+        else
+        {
+            BrickColor = new SolidColorBrush(Color.Parse("#299D24"));
         }
         Refresh();
     }

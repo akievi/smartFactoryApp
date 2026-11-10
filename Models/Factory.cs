@@ -159,4 +159,11 @@ public class Factory
         }
         return -1;
     }
+    public void SetupProductionLines()
+    {
+        productionRed.CreateBricks();
+        productionBlue.CreateBricks();
+        productionYellow.CreateBricks();
+        productionGreen.CreateBricks();
+    }
 }

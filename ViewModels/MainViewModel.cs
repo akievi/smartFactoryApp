@@ -49,22 +49,6 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         factory = new Factory();
-        foreach (var brick in factory.RedBricks)
-        {
-            RedBricks.Add(new LegoBrickViewModel(brick));
-        }
-        foreach (var brick in factory.BlueBricks)
-        {
-            BlueBricks.Add(new LegoBrickViewModel(brick));
-        }
-        foreach (var brick in factory.GreenBricks)
-        {
-            GreenBricks.Add(new LegoBrickViewModel(brick));
-        }
-        foreach (var brick in factory.YellowBricks)
-        {
-            YellowBricks.Add(new LegoBrickViewModel(brick));
-        }
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
         timer.Tick += Timer_Tick;
@@ -251,5 +235,25 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(RobotRotationAngle));
         // ein gegriffener Stein bewegt sich mit dem Roboter, also auch die Steine neu anzeigen
         BricksPoseChanged();
+    }
+    public void SetupProductionLines()
+    {
+        factory.SetupProductionLines();
+        foreach (var brick in factory.RedBricks)
+        {
+            RedBricks.Add(new LegoBrickViewModel(brick));
+        }
+        foreach (var brick in factory.BlueBricks)
+        {
+            BlueBricks.Add(new LegoBrickViewModel(brick));
+        }
+        foreach (var brick in factory.GreenBricks)
+        {
+            GreenBricks.Add(new LegoBrickViewModel(brick));
+        }
+        foreach (var brick in factory.YellowBricks)
+        {
+            YellowBricks.Add(new LegoBrickViewModel(brick));
+        }
     }
 }

@@ -5,6 +5,7 @@ using System;
 namespace smartFactoryApp.Models;
 public class ProductionLine
 {
+    private Random random = new Random();
     private Pose pose;
     private Parameters.LegoColor color;
     private List<LegoBrick> bricks = new List<LegoBrick>();
@@ -27,14 +28,13 @@ public class ProductionLine
     {
         this.pose = pose;
         this.color = color;
-        CreateBricks();
     }
     // Band ohne Steine (z.B. Recycle- und Delivery-Band): Bricks bleibt leer, move() tut damit nichts
     public ProductionLine(Pose pose)
     {
         this.pose = pose;
     }
-    private void CreateBricks()
+    public void CreateBricks()
     {
         // Mittelpunkt des Bands
         int cx = pose.X + ViewParameters.productionLineWidth / 2;
@@ -99,7 +99,7 @@ public class ProductionLine
             int x = mitteSteinX - halbeBreite;
             int y = mitteSteinY - halbeHoehe;
 
-            bricks.Add(new LegoBrick(new Pose(x, y, pose.Angle), color, size));
+            bricks.Add(new LegoBrick(new Pose(x, y, pose.Angle), (Parameters.LegoColor)random.Next(4), size));
         }
     }
     public void move()

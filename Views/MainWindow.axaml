@@ -153,7 +153,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#A41125">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -175,7 +175,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#4462DA">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -197,7 +197,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#F9E00A">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -219,7 +219,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#299D24">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -246,6 +246,10 @@
 
                 <!-- 8d: Timer der Foerderbaender starten/stoppen -->
                 <TextBlock Classes="header" Text="BAENDER" />
+                <!-- Laborblatt 5: Baender sind beim Start leer, ein Klick legt Steine mit Zufallsfarben an -->
+                <Button x:Name="SetupButton" Classes="pad" Content="Setup Production Lines" FontSize="14"
+                        HorizontalAlignment="Center" Width="178" Height="34" ToolTip.Tip="Steine mit Zufallsfarben an die Baender legen"
+                        Click="SetupProductionLines_Click" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="StartButton" Classes="pad wide" Content="Start" FontSize="16" ToolTip.Tip="Foerderbaender starten" Click="StartTimer_Click" />
                     <Button x:Name="StopButton"  Classes="pad wide" Content="Stop"  FontSize="16" ToolTip.Tip="Foerderbaender anhalten" Click="StopTimer_Click" />
