@@ -20,6 +20,7 @@ public class Factory
     private ProductionLine productionBlue = new ProductionLine(ProdBluePose, Parameters.LegoColor.blue);
     private ProductionLine productionYellow = new ProductionLine(ProdYellowPose, Parameters.LegoColor.yellow);
     private ProductionLine productionGreen = new ProductionLine(ProdGreenPose, Parameters.LegoColor.green);
+    private Logistics logistics = new Logistics();
     public List<LegoBrick> RedBricks => productionRed.Bricks;
     public List<LegoBrick> BlueBricks => productionBlue.Bricks;
     public List<LegoBrick> YellowBricks => productionYellow.Bricks;
@@ -45,6 +46,25 @@ public class Factory
     public int ProductionDeliveryX => productionDelivery.Location.X;
     public int ProductionDeliveryY => productionDelivery.Location.Y;
     public double ProductionDeliveryAngle => productionDelivery.RotationAngle;
+    public List<LegoColor> LegoOrder => logistics.Order;
+    public string LogisticsStep
+    {
+        get
+        {
+            if (logistics.OrderRunning)
+            {
+                return logistics.CurrentStep(PickStation(logistics.NeededColor));
+            }
+            else if (logistics.Order.Count == 0)
+            {
+                return "No order in progress";
+            }
+            else
+            {
+                return "Order completed";
+            }
+        }
+    }
     public Factory()
     {
         robot = new Robot(RobotPose.Location, RobotBorders);
@@ -94,6 +114,10 @@ public class Factory
                 return UndockResult.defect;
             }
             // alle vier Recycle-Plaetze belegt: Stein geht ausnahmsweise trotzdem zum Kunden
+        }
+        if (stein != null)
+        {
+            logistics.BrickDelivered(stein.Color);
         }
         return UndockResult.delivered;
     }
@@ -158,5 +182,108 @@ public class Factory
             }
         }
         return -1;
+    }
+    public void SetupProductionLines()
+    {
+        productionRed.CreateBricks();
+        productionBlue.CreateBricks();
+        productionYellow.CreateBricks();
+        productionGreen.CreateBricks();
+    }
+    public void CreateOrder()
+    {
+        logistics.CreateRandomOrder();
+    }
+    public int GetDelivered(LegoColor farbe)
+    {
+        return logistics.GetDelivered(farbe);
+    }
+    private string PickStation(LegoColor farbe)
+    {
+        ProductionLine? band = PickLine(farbe);
+        if (band == productionRecycle)
+        {
+            return "recycle line";
+        }
+        else if (band == null)
+        {
+            return "no line";
+        }
+        else
+        {
+            return band.Color.ToString() + " line";
+        }
+    }
+    private bool HatStein(List<LegoBrick> steine, LegoColor farbe, BrickStatus status)
+    {
+        foreach (LegoBrick stein in steine)
+        {
+            if (stein.Color == farbe && stein.Status == status)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private ProductionLine? PickLine(LegoColor farbe)
+    {
+        if (HatStein(AlleBricks(), farbe, BrickStatus.onRecycleLine))
+        {
+            return productionRecycle;
+        }
+        if (HatStein(productionRed.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return productionRed;
+        }
+        if (HatStein(productionBlue.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return productionBlue;
+        }
+        if (HatStein(productionYellow.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return productionYellow;
+        }
+        if (HatStein(productionGreen.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return productionGreen;
+        }
+        return null;
+    }
+    public bool GoToLine()
+    {
+        if (logistics.OrderRunning)
+        {
+            ProductionLine? line = PickLine(logistics.NeededColor);
+            if (line != null)
+            {
+                if (line == productionRecycle)
+                {
+                    robot.GoToPose(GoToRecyclePose);
+                }
+                else if (line == productionRed)
+                {
+                    robot.GoToPose(GoToRedPose);
+                }
+                else if (line == productionBlue)
+                {
+                    robot.GoToPose(GoToBluePose);
+                }
+                else if (line == productionYellow)
+                {
+                    robot.GoToPose(GoToYellowPose);
+                }
+                else if (line == productionGreen)
+                {
+                    robot.GoToPose(GoToGreenPose);
+                }
+                return true;
+            }
+
+        }
+        return false;
+    }
+    public void GoToDelivery()
+    {
+        robot.GoToPose(GoToDeliveryPose);
     }
 }

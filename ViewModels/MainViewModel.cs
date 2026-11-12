@@ -17,6 +17,15 @@ public partial class MainViewModel : ViewModelBase
     Factory factory;
     DispatcherTimer timer;
     [ObservableProperty] private string undockInfo = "";
+    [ObservableProperty] private int yellowOrder;
+    [ObservableProperty] private int yellowDelivered;
+    [ObservableProperty] private int redOrder;
+    [ObservableProperty] private int redDelivered;
+    [ObservableProperty] private int blueOrder;
+    [ObservableProperty] private int blueDelivered;
+    [ObservableProperty] private int greenOrder;
+    [ObservableProperty] private int greenDelivered;
+    [ObservableProperty] private string orderInfo = "";
     public ObservableCollection<LegoBrickViewModel> RedBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> BlueBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> YellowBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
@@ -49,22 +58,7 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         factory = new Factory();
-        foreach (var brick in factory.RedBricks)
-        {
-            RedBricks.Add(new LegoBrickViewModel(brick));
-        }
-        foreach (var brick in factory.BlueBricks)
-        {
-            BlueBricks.Add(new LegoBrickViewModel(brick));
-        }
-        foreach (var brick in factory.GreenBricks)
-        {
-            GreenBricks.Add(new LegoBrickViewModel(brick));
-        }
-        foreach (var brick in factory.YellowBricks)
-        {
-            YellowBricks.Add(new LegoBrickViewModel(brick));
-        }
+        OrderInfo = factory.LogisticsStep;
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
         timer.Tick += Timer_Tick;
@@ -215,6 +209,7 @@ public partial class MainViewModel : ViewModelBase
     public void Undock()
     {
         UndockResult ergebnis = factory.RobotUndock();
+        UpdateDelivered();
         if (ergebnis == UndockResult.delivered)
         {
             UndockInfo = "Brick delivered, going to customer";
@@ -251,5 +246,90 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(RobotRotationAngle));
         // ein gegriffener Stein bewegt sich mit dem Roboter, also auch die Steine neu anzeigen
         BricksPoseChanged();
+
+        OrderInfo = factory.LogisticsStep;
+    }
+    public void SetupProductionLines()
+    {
+        factory.SetupProductionLines();
+        foreach (var brick in factory.RedBricks)
+        {
+            RedBricks.Add(new LegoBrickViewModel(brick));
+        }
+        foreach (var brick in factory.BlueBricks)
+        {
+            BlueBricks.Add(new LegoBrickViewModel(brick));
+        }
+        foreach (var brick in factory.GreenBricks)
+        {
+            GreenBricks.Add(new LegoBrickViewModel(brick));
+        }
+        foreach (var brick in factory.YellowBricks)
+        {
+            YellowBricks.Add(new LegoBrickViewModel(brick));
+        }
+    }
+    public void CreateOrder()
+    {
+        factory.CreateOrder();
+
+        int gelb = 0;
+        int rot = 0;
+        int blau = 0;
+        int gruen = 0;
+
+        foreach (LegoColor farbe in factory.LegoOrder)
+        {
+            if (farbe == LegoColor.yellow)
+            {
+                gelb++;
+            }
+            else if (farbe == LegoColor.red)
+            {
+                rot++;
+            }
+            else if (farbe == LegoColor.blue)
+            {
+                blau++;
+            }
+            else
+            {
+                gruen++;
+            }
+        }
+
+        YellowOrder = gelb;
+        RedOrder = rot;
+        BlueOrder = blau;
+        GreenOrder = gruen;
+        
+        UpdateDelivered();
+        OrderInfo = factory.LogisticsStep;
+    }
+    public void UpdateDelivered()
+    {
+        YellowDelivered = factory.GetDelivered(LegoColor.yellow);
+        RedDelivered = factory.GetDelivered(LegoColor.red);
+        BlueDelivered = factory.GetDelivered(LegoColor.blue);
+        GreenDelivered = factory.GetDelivered(LegoColor.green);
+    }
+    public void GoToLine()
+    {
+        bool result = factory.GoToLine();
+        if (!result)
+        {
+            UndockInfo = "No pickup possible";
+        }
+        else
+        {
+            UndockInfo = "";
+        }
+        RobotPoseChanged();
+    }
+    public void GoToDelivery()
+    {
+        factory.GoToDelivery();
+        UndockInfo = "";
+        RobotPoseChanged();
     }
 }

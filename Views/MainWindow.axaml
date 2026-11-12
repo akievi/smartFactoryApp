@@ -24,13 +24,13 @@
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="LetterSpacing" Value="1" />
-            <Setter Property="Margin" Value="0,14,0,6" />
+            <Setter Property="Margin" Value="0,8,0,4" />
         </Style>
 
         <!-- Steuer-Buttons -->
         <Style Selector="Button.pad">
             <Setter Property="Width" Value="52" />
-            <Setter Property="Height" Value="50" />
+            <Setter Property="Height" Value="38" />
             <Setter Property="Margin" Value="3" />
             <Setter Property="FontSize" Value="22" />
             <Setter Property="CornerRadius" Value="10" />
@@ -48,7 +48,7 @@
             <Setter Property="Foreground" Value="#1F2328" />
         </Style>
         <Style Selector="Button.wide">
-            <Setter Property="Width" Value="86" />
+            <Setter Property="Width" Value="82" />
         </Style>
         <!-- Reset-Button in der Mitte des Pfeilfelds, orange hervorgehoben -->
         <Style Selector="Button.reset">
@@ -153,7 +153,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#A41125">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -175,7 +175,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#4462DA">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -197,7 +197,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#F9E00A">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -219,7 +219,7 @@
                     </ItemsControl.Styles>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LegoBrickViewModel">
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="#299D24">
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding BrickColor}">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="{Binding Angle}" />
                                 </Rectangle.RenderTransform>
@@ -241,12 +241,16 @@
         </Grid>
 
         <!-- Steuerpanel im beigen Bereich des Fabrikplans (x 601 bis 899) -->
-        <Border HorizontalAlignment="Left" Margin="601,0,0,0" Width="299" Padding="14,22">
+        <Border HorizontalAlignment="Left" Margin="601,0,0,0" Width="299" Padding="14,10">
             <StackPanel>
 
                 <!-- 8d: Timer der Foerderbaender starten/stoppen -->
                 <TextBlock Classes="header" Text="BAENDER" />
+                <!-- Laborblatt 5: Baender sind beim Start leer, ein Klick legt Steine mit Zufallsfarben an -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="SetupButton" Classes="pad wide" Content="Setup" FontSize="16"
+                            ToolTip.Tip="Setup Production Lines: Steine mit Zufallsfarben an die Baender legen"
+                            Click="SetupProductionLines_Click" />
                     <Button x:Name="StartButton" Classes="pad wide" Content="Start" FontSize="16" ToolTip.Tip="Foerderbaender starten" Click="StartTimer_Click" />
                     <Button x:Name="StopButton"  Classes="pad wide" Content="Stop"  FontSize="16" ToolTip.Tip="Foerderbaender anhalten" Click="StopTimer_Click" />
                 </StackPanel>
@@ -258,6 +262,13 @@
                                  IsChecked="{Binding Schrittbewegung}" />
                     <RadioButton GroupName="Modus" Content="Kontinuierlich" FontSize="13" Foreground="#2D3320"
                                  IsChecked="{Binding KontinuierlicheBewegung}" />
+                </StackPanel>
+                <!-- Laborblatt 5: Roboter direkt vor das Band aus dem Logistikplan bzw. vor das Delivery-Band setzen -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="GoToLineButton" Classes="pad" Content="GoToPickUp" FontSize="13" Width="120" Height="30"
+                            ToolTip.Tip="Roboter vor das Band setzen, an dem der naechste Stein liegt" Click="GoToLine_Click" />
+                    <Button x:Name="GoToDeliveryButton" Classes="pad" Content="GoToDelivery" FontSize="13" Width="120" Height="30"
+                            ToolTip.Tip="Roboter vor das Delivery-Band setzen" Click="GoToDelivery_Click" />
                 </StackPanel>
                 <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Center">
                     <Button x:Name="UpLeftButton"    Classes="pad" Grid.Row="0" Grid.Column="0" Content="↖" ToolTip.Tip="Hoch links"   Click="MoveUpLeft_Click" />
@@ -280,19 +291,54 @@
                 </StackPanel>
                 
                 <TextBlock Text="{Binding UndockInfo}" TextWrapping="Wrap" FontSize="13"
-                    Foreground="#2D3320" Margin="0,6,0,0" />
+                    Foreground="#2D3320" Margin="0,2,0,0" />
 
-                <TextBlock Classes="header" Text="POSITION" />
-                <Border Background="#DCE1C2" CornerRadius="10" Padding="14,10">
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
-                        <TextBlock Classes="label" Grid.Row="0" Text="X" />
-                        <TextBlock x:Name="textBoxX" Classes="value" Grid.Row="0" Grid.Column="1" Text="{Binding RobotX, StringFormat='{}{0:0} px'}" />
-                        <TextBlock Classes="label" Grid.Row="1" Text="Y" />
-                        <TextBlock x:Name="textBoxY" Classes="value" Grid.Row="1" Grid.Column="1" Text="{Binding RobotY, StringFormat='{}{0:0} px'}" />
-                        <TextBlock Classes="label" Grid.Row="2" Text="Winkel" />
-                        <TextBlock Classes="value" Grid.Row="2" Grid.Column="1" Text="{Binding RobotRotationAngle, StringFormat='{}{0:0}°'}" />
-                    </Grid>
-                </Border>
+                <!-- Laborblatt 5: Order-Tabelle links, Positionsanzeige rechts daneben (sonst reicht die Hoehe nicht) -->
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Classes="header" Text="AUFTRAG" />
+                        <Grid ColumnDefinitions="56,*,*" RowDefinitions="24,20,20,20,20" RowSpacing="2">
+                            <Button x:Name="OrderButton" Classes="pad" Grid.Row="0" Grid.Column="0" Content="Order"
+                                    Width="56" Height="24" Margin="0" FontSize="12" Padding="0"
+                                    ToolTip.Tip="Zufaelligen Auftrag ueber 8 Steine erzeugen" Click="Order_Click" />
+                            <TextBlock Classes="label" Grid.Row="0" Grid.Column="1" Text="Best." FontSize="12" HorizontalAlignment="Center" />
+                            <TextBlock Classes="label" Grid.Row="0" Grid.Column="2" Text="Gelief." FontSize="12" HorizontalAlignment="Center" />
+
+                            <Border Grid.Row="1" Background="#F9E00A" CornerRadius="4"><TextBlock Text="gelb" FontSize="12" Foreground="#2D3320" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                            <TextBlock Classes="value" Grid.Row="1" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" Text="{Binding YellowOrder}" />
+                            <TextBlock Classes="value" Grid.Row="1" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" Text="{Binding YellowDelivered}" />
+
+                            <Border Grid.Row="2" Background="#4462DA" CornerRadius="4"><TextBlock Text="blau" FontSize="12" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                            <TextBlock Classes="value" Grid.Row="2" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" Text="{Binding BlueOrder}" />
+                            <TextBlock Classes="value" Grid.Row="2" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" Text="{Binding BlueDelivered}" />
+
+                            <Border Grid.Row="3" Background="#A41125" CornerRadius="4"><TextBlock Text="rot" FontSize="12" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                            <TextBlock Classes="value" Grid.Row="3" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" Text="{Binding RedOrder}" />
+                            <TextBlock Classes="value" Grid.Row="3" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" Text="{Binding RedDelivered}" />
+
+                            <Border Grid.Row="4" Background="#299D24" CornerRadius="4"><TextBlock Text="gruen" FontSize="12" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                            <TextBlock Classes="value" Grid.Row="4" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" Text="{Binding GreenOrder}" />
+                            <TextBlock Classes="value" Grid.Row="4" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" Text="{Binding GreenDelivered}" />
+                        </Grid>
+                    </StackPanel>
+                    <!-- Logistikplan: was als Naechstes zu tun ist, ueber die ganze Breite unter Tabelle und Position -->
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding OrderInfo}" TextWrapping="Wrap"
+                               FontSize="13" FontWeight="SemiBold" Foreground="#1E3A8A" Margin="0,3,0,0" />
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Classes="header" Text="POSITION" />
+                        <Border Background="#DCE1C2" CornerRadius="10" Padding="10,8" Width="104">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="2">
+                                <TextBlock Classes="label" Grid.Row="0" Text="X" />
+                                <TextBlock x:Name="textBoxX" Classes="value" Grid.Row="0" Grid.Column="1" FontSize="15" Text="{Binding RobotX, StringFormat='{}{0:0} px'}" />
+                                <TextBlock Classes="label" Grid.Row="1" Text="Y" />
+                                <TextBlock x:Name="textBoxY" Classes="value" Grid.Row="1" Grid.Column="1" FontSize="15" Text="{Binding RobotY, StringFormat='{}{0:0} px'}" />
+                                <TextBlock Classes="label" Grid.Row="2" Text="∠" />
+                                <TextBlock Classes="value" Grid.Row="2" Grid.Column="1" FontSize="15" Text="{Binding RobotRotationAngle, StringFormat='{}{0:0}°'}" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
         </Border>
     </Grid>

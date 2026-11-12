@@ -109,4 +109,10 @@ public class Robot : Beweger
         Location = new Point(neuX, neuY);
         DockobjektNachfuehren(); // gegriffenen Stein mitnehmen
     }
+    public void GoToPose(Pose targetPose)
+    {
+        Location = targetPose.Location;
+        RotationAngle = targetPose.Angle;
+        DockobjektNachfuehren();
+    }
 }
