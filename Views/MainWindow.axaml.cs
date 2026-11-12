@@ -76,4 +76,8 @@ public partial class MainWindow : Window
         ViewModel?.SetupProductionLines();
         SetupButton.IsEnabled = false;
     }
+    private void Order_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.CreateOrder();
+    }
 }

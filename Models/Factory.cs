@@ -20,6 +20,7 @@ public class Factory
     private ProductionLine productionBlue = new ProductionLine(ProdBluePose, Parameters.LegoColor.blue);
     private ProductionLine productionYellow = new ProductionLine(ProdYellowPose, Parameters.LegoColor.yellow);
     private ProductionLine productionGreen = new ProductionLine(ProdGreenPose, Parameters.LegoColor.green);
+    private Logistics logistics = new Logistics();
     public List<LegoBrick> RedBricks => productionRed.Bricks;
     public List<LegoBrick> BlueBricks => productionBlue.Bricks;
     public List<LegoBrick> YellowBricks => productionYellow.Bricks;
@@ -45,6 +46,7 @@ public class Factory
     public int ProductionDeliveryX => productionDelivery.Location.X;
     public int ProductionDeliveryY => productionDelivery.Location.Y;
     public double ProductionDeliveryAngle => productionDelivery.RotationAngle;
+    public List<LegoColor> LegoOrder => logistics.Order;
     public Factory()
     {
         robot = new Robot(RobotPose.Location, RobotBorders);
@@ -165,5 +167,13 @@ public class Factory
         productionBlue.CreateBricks();
         productionYellow.CreateBricks();
         productionGreen.CreateBricks();
+    }
+    public void CreateOrder()
+    {
+        logistics.CreateRandomOrder();
+    }
+    public int GetDelivered(LegoColor farbe)
+    {
+        return logistics.GetDelivered(farbe);
     }
 }

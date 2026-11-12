@@ -5,6 +5,7 @@ public class Parameters
     public const int step = 3;
     public const int degreeStep = 5;
     public const int bricksPerLine = 4;
+    public const int orderSize = 8;
     public const int timerInterval = 50; //in ms
     public const int robotTimerInterval = 150; //in ms, eigener Takt fuer die kontinuierliche Roboterbewegung
     public enum Direction

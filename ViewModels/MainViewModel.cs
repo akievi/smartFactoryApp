@@ -17,6 +17,14 @@ public partial class MainViewModel : ViewModelBase
     Factory factory;
     DispatcherTimer timer;
     [ObservableProperty] private string undockInfo = "";
+    [ObservableProperty] private int yellowOrder;
+    [ObservableProperty] private int yellowDelivered;
+    [ObservableProperty] private int redOrder;
+    [ObservableProperty] private int redDelivered;
+    [ObservableProperty] private int blueOrder;
+    [ObservableProperty] private int blueDelivered;
+    [ObservableProperty] private int greenOrder;
+    [ObservableProperty] private int greenDelivered;
     public ObservableCollection<LegoBrickViewModel> RedBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> BlueBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
     public ObservableCollection<LegoBrickViewModel> YellowBricks { get; } = new ObservableCollection<LegoBrickViewModel>();
@@ -255,5 +263,44 @@ public partial class MainViewModel : ViewModelBase
         {
             YellowBricks.Add(new LegoBrickViewModel(brick));
         }
+    }
+    public void CreateOrder()
+    {
+        factory.CreateOrder();
+
+        int gelb = 0;
+        int rot = 0;
+        int blau = 0;
+        int gruen = 0;
+
+        foreach (LegoColor farbe in factory.LegoOrder)
+        {
+            if (farbe == LegoColor.yellow)
+            {
+                gelb++;
+            }
+            else if (farbe == LegoColor.red)
+            {
+                rot++;
+            }
+            else if (farbe == LegoColor.blue)
+            {
+                blau++;
+            }
+            else
+            {
+                gruen++;
+            }
+        }
+
+        YellowOrder = gelb;
+        RedOrder = rot;
+        BlueOrder = blau;
+        GreenOrder = gruen;
+
+        YellowDelivered = factory.GetDelivered(LegoColor.yellow);
+        RedDelivered = factory.GetDelivered(LegoColor.red);
+        BlueDelivered = factory.GetDelivered(LegoColor.blue);
+        GreenDelivered = factory.GetDelivered(LegoColor.green);
     }
 }
