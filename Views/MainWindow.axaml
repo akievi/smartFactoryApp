@@ -287,7 +287,7 @@
                     Foreground="#2D3320" Margin="0,6,0,0" />
 
                 <!-- Laborblatt 5: Order-Tabelle links, Positionsanzeige rechts daneben (sonst reicht die Hoehe nicht) -->
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10">
                     <StackPanel Grid.Column="0">
                         <TextBlock Classes="header" Text="AUFTRAG" />
                         <Grid ColumnDefinitions="56,*,*" RowDefinitions="26,22,22,22,22" RowSpacing="3">
@@ -314,6 +314,9 @@
                             <TextBlock Classes="value" Grid.Row="4" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" Text="{Binding GreenDelivered}" />
                         </Grid>
                     </StackPanel>
+                    <!-- Logistikplan: was als Naechstes zu tun ist, ueber die ganze Breite unter Tabelle und Position -->
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding OrderInfo}" TextWrapping="Wrap"
+                               FontSize="13" FontWeight="SemiBold" Foreground="#1E3A8A" Margin="0,6,0,0" />
 
                     <StackPanel Grid.Column="1">
                         <TextBlock Classes="header" Text="POSITION" />

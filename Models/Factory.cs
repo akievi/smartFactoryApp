@@ -47,6 +47,24 @@ public class Factory
     public int ProductionDeliveryY => productionDelivery.Location.Y;
     public double ProductionDeliveryAngle => productionDelivery.RotationAngle;
     public List<LegoColor> LegoOrder => logistics.Order;
+    public string LogisticsStep
+    {
+        get
+        {
+            if (logistics.OrderRunning)
+            {
+                return logistics.CurrentStep(PickStation(logistics.NeededColor));
+            }
+            else if (logistics.Order.Count == 0)
+            {
+                return "No order in progress";
+            }
+            else
+            {
+                return "Order completed";
+            }
+        }
+    }
     public Factory()
     {
         robot = new Robot(RobotPose.Location, RobotBorders);
@@ -96,6 +114,10 @@ public class Factory
                 return UndockResult.defect;
             }
             // alle vier Recycle-Plaetze belegt: Stein geht ausnahmsweise trotzdem zum Kunden
+        }
+        if (stein != null)
+        {
+            logistics.BrickDelivered(stein.Color);
         }
         return UndockResult.delivered;
     }
@@ -175,5 +197,40 @@ public class Factory
     public int GetDelivered(LegoColor farbe)
     {
         return logistics.GetDelivered(farbe);
+    }
+    private string PickStation(LegoColor farbe)
+    {
+        if (HatStein(AlleBricks(), farbe, BrickStatus.onRecycleLine))
+        {
+            return "recycle line";
+        }
+        if (HatStein(productionRed.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return $"{productionRed.Color} production line";
+        }
+        if (HatStein(productionBlue.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return $"{productionBlue.Color} production line";
+        }
+        if (HatStein(productionYellow.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return $"{productionYellow.Color} production line";
+        }
+        if (HatStein(productionGreen.Bricks, farbe, BrickStatus.onProductionLine))
+        {
+            return $"{productionGreen.Color} production line";
+        }
+        return "nowhere (not available)";
+    }
+    private bool HatStein(List<LegoBrick> steine, LegoColor farbe, BrickStatus status)
+    {
+        foreach (LegoBrick stein in steine)
+        {
+            if (stein.Color == farbe && stein.Status == status)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
