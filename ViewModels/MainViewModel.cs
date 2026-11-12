@@ -313,4 +313,23 @@ public partial class MainViewModel : ViewModelBase
         BlueDelivered = factory.GetDelivered(LegoColor.blue);
         GreenDelivered = factory.GetDelivered(LegoColor.green);
     }
+    public void GoToLine()
+    {
+        bool result = factory.GoToLine();
+        if (!result)
+        {
+            UndockInfo = "No pickup possible";
+        }
+        else
+        {
+            UndockInfo = "";
+        }
+        RobotPoseChanged();
+    }
+    public void GoToDelivery()
+    {
+        factory.GoToDelivery();
+        UndockInfo = "";
+        RobotPoseChanged();
+    }
 }

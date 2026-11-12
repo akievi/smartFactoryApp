@@ -70,4 +70,11 @@ public static class ViewParameters
     public const int ToCustomerLineWidth = 110;
     public const int ToCustomerLineHeight = 40;
     public static Point ToCustomerLinePosition = new Point(396, 44);
+    public static Pose GoToRedPose      = new Pose(183, 219, 180);
+    public static Pose GoToBluePose     = new Pose(345, 235, 0);
+    public static Pose GoToYellowPose   = new Pose(116, 352, 90);
+    public static Pose GoToGreenPose    = new Pose(392, 352, 90);
+    public static Pose GoToRecyclePose  = new Pose(254, 207, 90);
+    // getragener Stein liegt 16 px unter dem Delivery-Band (6 Schritte mit →)
+    public static Pose GoToDeliveryPose = new Pose(274, 107, 270);
 }

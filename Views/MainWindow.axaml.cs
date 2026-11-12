@@ -80,4 +80,12 @@ public partial class MainWindow : Window
     {
         ViewModel?.CreateOrder();
     }
+    private void GoToLine_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.GoToLine();
+    }
+    private void GoToDelivery_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.GoToDelivery();
+    }
 }

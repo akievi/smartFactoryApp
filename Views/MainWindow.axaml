@@ -30,7 +30,7 @@
         <!-- Steuer-Buttons -->
         <Style Selector="Button.pad">
             <Setter Property="Width" Value="52" />
-            <Setter Property="Height" Value="42" />
+            <Setter Property="Height" Value="38" />
             <Setter Property="Margin" Value="3" />
             <Setter Property="FontSize" Value="22" />
             <Setter Property="CornerRadius" Value="10" />
@@ -263,6 +263,13 @@
                     <RadioButton GroupName="Modus" Content="Kontinuierlich" FontSize="13" Foreground="#2D3320"
                                  IsChecked="{Binding KontinuierlicheBewegung}" />
                 </StackPanel>
+                <!-- Laborblatt 5: Roboter direkt vor das Band aus dem Logistikplan bzw. vor das Delivery-Band setzen -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="GoToLineButton" Classes="pad" Content="GoToPickUp" FontSize="13" Width="120" Height="30"
+                            ToolTip.Tip="Roboter vor das Band setzen, an dem der naechste Stein liegt" Click="GoToLine_Click" />
+                    <Button x:Name="GoToDeliveryButton" Classes="pad" Content="GoToDelivery" FontSize="13" Width="120" Height="30"
+                            ToolTip.Tip="Roboter vor das Delivery-Band setzen" Click="GoToDelivery_Click" />
+                </StackPanel>
                 <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Center">
                     <Button x:Name="UpLeftButton"    Classes="pad" Grid.Row="0" Grid.Column="0" Content="↖" ToolTip.Tip="Hoch links"   Click="MoveUpLeft_Click" />
                     <Button x:Name="UpButton"        Classes="pad" Grid.Row="0" Grid.Column="1" Content="↑" ToolTip.Tip="Hoch"         Click="MoveUp_Click" />
@@ -284,13 +291,13 @@
                 </StackPanel>
                 
                 <TextBlock Text="{Binding UndockInfo}" TextWrapping="Wrap" FontSize="13"
-                    Foreground="#2D3320" Margin="0,6,0,0" />
+                    Foreground="#2D3320" Margin="0,2,0,0" />
 
                 <!-- Laborblatt 5: Order-Tabelle links, Positionsanzeige rechts daneben (sonst reicht die Hoehe nicht) -->
                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10">
                     <StackPanel Grid.Column="0">
                         <TextBlock Classes="header" Text="AUFTRAG" />
-                        <Grid ColumnDefinitions="56,*,*" RowDefinitions="26,22,22,22,22" RowSpacing="3">
+                        <Grid ColumnDefinitions="56,*,*" RowDefinitions="24,20,20,20,20" RowSpacing="2">
                             <Button x:Name="OrderButton" Classes="pad" Grid.Row="0" Grid.Column="0" Content="Order"
                                     Width="56" Height="24" Margin="0" FontSize="12" Padding="0"
                                     ToolTip.Tip="Zufaelligen Auftrag ueber 8 Steine erzeugen" Click="Order_Click" />
@@ -316,12 +323,12 @@
                     </StackPanel>
                     <!-- Logistikplan: was als Naechstes zu tun ist, ueber die ganze Breite unter Tabelle und Position -->
                     <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding OrderInfo}" TextWrapping="Wrap"
-                               FontSize="13" FontWeight="SemiBold" Foreground="#1E3A8A" Margin="0,6,0,0" />
+                               FontSize="13" FontWeight="SemiBold" Foreground="#1E3A8A" Margin="0,3,0,0" />
 
                     <StackPanel Grid.Column="1">
                         <TextBlock Classes="header" Text="POSITION" />
                         <Border Background="#DCE1C2" CornerRadius="10" Padding="10,8" Width="104">
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="2">
                                 <TextBlock Classes="label" Grid.Row="0" Text="X" />
                                 <TextBlock x:Name="textBoxX" Classes="value" Grid.Row="0" Grid.Column="1" FontSize="15" Text="{Binding RobotX, StringFormat='{}{0:0} px'}" />
                                 <TextBlock Classes="label" Grid.Row="1" Text="Y" />
